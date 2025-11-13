@@ -1,0 +1,38 @@
+<div class="sidebar" [class.open]="isOpen" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <img src="assets/logos/Logo-sidebar.png" alt="Logo" style="margin-right: 48px;" width="150px" *ngIf="!isCollapsed" />
+     <button class="collapse-btn" (click)="isMobile ? closeSidebar() : toggleCollapse()">
+      <i class="material-icons menu-icon">menu</i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div
+      class="menu-section"
+      *ngFor="let section of getVisibleItems(menuItems || [])"
+    >
+      <div class="section-header" *ngIf="section.label && !isCollapsed">
+        {{ section.label }}
+      </div>
+
+      <ul class="menu-list">
+        <li
+          class="menu-item"
+          *ngFor="let item of getVisibleItems(section.children || [])"
+        >
+          <a
+            [routerLink]="item.route"
+            [queryParams]="item.queryParams"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="menu-link"
+            (click)="closeSidebar()"
+          >
+            <i class="material-icons menu-icon">{{ item.icon }}</i>
+            <span class="menu-text" *ngIf="!isCollapsed">{{ item.label }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

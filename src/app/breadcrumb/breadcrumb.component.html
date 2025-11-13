@@ -1,0 +1,20 @@
+<div class="breadcrumb-wrapper" [class.with-container]="showContainer" [class.center-align]="centerAlign">
+  <nav class="breadcrumb" aria-label="breadcrumb">
+    <ng-container *ngFor="let item of items; let i = index; let last = last">
+      <span 
+        class="breadcrumb-item" 
+        [class.active]="item.active"
+        [class.clickable]="isClickable(item)"
+        (click)="onItemClick(item)">
+        {{ item.label }}
+      </span>
+      
+      <span 
+        *ngIf="!last" 
+        class="breadcrumb-separator" 
+        aria-hidden="true">
+        /
+      </span>
+    </ng-container>
+  </nav>
+</div>

@@ -1,0 +1,56 @@
+/* src/app/qr-code/qr-code.component.css */
+.qr-code-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.qr-code-display {
+  margin-bottom: 20px;
+}
+
+.download-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}
+
+.qr-code-text {
+  text-align: center;
+  /* Centraliza o texto */
+  margin-top: 10px;
+  /* Adiciona espaçamento acima da div */
+  font-family: Arial, sans-serif;
+  /* Define a fonte */
+  color: #084496;
+  /* Define a cor do texto */
+}
+
+.qr-code-text p {
+  margin: 5px 0;
+  /* Margem entre os parágrafos */
+  font-size: 18px;
+  /* Tamanho da fonte */
+  font-weight: bold;
+  /* Deixa o texto em negrito */
+}
+
+.qr-code-text p:first-child {
+  font-size: 22px;
+  /* Tamanho maior para o primeiro parágrafo */
+}

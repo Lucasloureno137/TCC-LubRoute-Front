@@ -1,0 +1,58 @@
+/* Resetando os estilos padrões */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 50vh;
+    background-color: #f4f4f9;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .message {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #4CAF50;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button-1 {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .button-1:hover {
+    background-color: #45a049;
+  }
+  
+  .button-2 {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .button-2:hover {
+    background-color: #1e88e5;
+  }
+  

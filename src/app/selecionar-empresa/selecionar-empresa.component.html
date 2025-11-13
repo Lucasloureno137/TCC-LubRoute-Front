@@ -1,0 +1,42 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Selecionar Empresa</h1>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="alert-section">
+      <div class="alert-card">
+        <i class="material-icons">warning</i>
+        <div class="alert-content">
+          <p>
+            Selecione o contexto de uma empresa para acessar o sistema
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+
+      <mat-form-field>
+        <mat-label>Empresa</mat-label>
+        <mat-select [formControl]="selectedEmpresaControl">
+          <mat-option
+            *ngFor="let option of filteredOptions"
+            [value]="option.publicId"
+          >
+            {{ option.nome }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="control-btn">
+        <button class="btn-primary" (click)="saveEmpresa()">
+          Confirmar
+        </button>
+        <app-voltar></app-voltar>
+      </div>
+    </div>
+  </div>
+</div>

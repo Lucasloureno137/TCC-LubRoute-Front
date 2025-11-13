@@ -1,0 +1,185 @@
+<div class="relatorios-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Relatórios</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h2 class="section-title">Novo Relatório</h2>
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo</mat-label>
+          <mat-select [(ngModel)]="tipoRelatorio">
+            <mat-option *ngFor="let option of options" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button class="btn-generate" (click)="onGerarRelatorio()">
+          <i class="material-icons">play_arrow</i>
+          Gerar Relatório
+        </button>
+      </div>
+    </div>
+
+    <!-- <div class="table-section">
+      <div class="table-container">
+        <table class="relatorios-table">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>NOME</th>
+              <th>CATEGORIA</th>
+              <th>ÚLTIMA VEZ GERADO</th>
+              <th>GERAR RELATÓRIO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let relatorio of getPaginatedRelatorios(); let i = index">
+              <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+              <td class="relatorio-name">{{ relatorio.nome }}</td>
+              <td>{{ relatorio.categoria }}</td>
+              <td>{{ relatorio.ultimaVezGerado }}</td>
+              <td>
+                <button class="btn-action" (click)="onGerarRelatorioSalvo(relatorio)">
+                  <i class="material-icons">play_arrow</i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="getPaginatedRelatorios().length === 0">
+          <i class="material-icons">assessment</i>
+          <p>Nenhum relatório encontrado</p>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select [(ngModel)]="itemsPerPage" (change)="updatePagination(); currentPage = 1">
+            <option value="9">9</option>
+            <option value="18">18</option>
+            <option value="27">27</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1">
+            <i class="material-icons">first_page</i>
+          </button>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1">
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages">
+            <i class="material-icons">chevron_right</i>
+          </button>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages">
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="tabela" [class.invisible]="!showTable">
+    <h1>{{ titulo }}</h1>
+
+    <button
+      class="filter-btn"
+      mat-raised-button
+      color="ligth"
+      (click)="filtroHabilitado = !filtroHabilitado"
+    >
+      <mat-icon>{{
+        filtroHabilitado ? "filter_alt_off" : "filter_alt"
+      }}</mat-icon>
+      {{ filtroHabilitado ? "Ocultar filtros" : "Exibir Filtros" }}
+    </button>
+
+    <button
+      *ngIf="filtrosSelecionados && filtrosSelecionados.length > 0"
+      class="filter-btn"
+      mat-raised-button
+      color="ligth"
+      (click)="removerFiltros()"
+    >
+      <mat-icon>filter_alt_off</mat-icon>
+      Remover Filtros
+    </button>
+
+    <div *ngIf="filtroHabilitado">
+      <div *ngFor="let filtro of filtros">
+        <mat-form-field>
+          <mat-label>{{ filtro.nome }}</mat-label>
+          <mat-select
+            (selectionChange)="filtrarData(filtro.nome, $event.value)"
+          >
+            <mat-option *ngFor="let option of filtro.valores" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <app-tabela
+      [allowFilter]="false"
+      [dataLayer]="dataSource"
+      [displayedColumns]="header"
+      [displayedColumnsCast]="header"
+    ></app-tabela>
+  </div>
+
+  <div class="doc-pdf" *ngIf="gerarDocumento">
+    <app-pdf-generator
+      *ngIf="header && dataSource"
+      [titulo]="titulo"
+      [cabecalho]="header"
+      [dados]="dataSource"
+      [download]="isMobile"
+    ></app-pdf-generator>
+  </div>
+
+  <div class="btn-control" *ngIf="showTable">
+    <app-voltar></app-voltar>
+    <button class="btn-style btn-limpar" (click)="limparForm()">
+      Limpar
+    </button>
+    <button class="btn-style btn-pdf" (click)="gerarDocumento = true">
+      Gerar PDF
+      <i class="material-icons">picture_as_pdf</i>
+    </button>
+  </div>
+</div>

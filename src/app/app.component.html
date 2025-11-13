@@ -1,0 +1,9 @@
+<ng-container *ngIf="showLayout; else publicLayout">
+  <app-layout></app-layout>
+</ng-container>
+
+<ng-template #publicLayout>
+  <div class="public-container">
+    <router-outlet></router-outlet>
+  </div>
+</ng-template>

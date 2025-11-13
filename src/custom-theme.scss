@@ -1,0 +1,63 @@
+@use '@angular/material' as mat;
+
+// Importa o core do Material
+@include mat.core();
+
+// Define paletas personalizadas
+$custom-primary-palette: mat.define-palette((
+  50: #ffeae0,
+  100: #ffc2b0,
+  200: #ff997f,
+  300: #ff704e,
+  400: #ff572f,
+  500: #ff6b35, // principal
+  600: #e65f2f,
+  700: #cc532a,
+  800: #b34724,
+  900: #993b1f,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white
+  )
+));
+
+$custom-accent-palette: mat.define-palette(mat.$blue-palette, 500, 100, 700);
+$custom-warn-palette: mat.define-palette(mat.$red-palette, 500);
+
+$custom-typography: mat.define-typography-config(
+  $font-family: 'Roboto, sans-serif'
+);
+
+$typography: mat.define-typography-config(
+  $font-family: 'Roboto, "Helvetica Neue", sans-serif',
+  $headline-1: mat.define-typography-level(96px, 96px, 300),
+  $headline-2: mat.define-typography-level(60px, 60px, 300),
+  $headline-3: mat.define-typography-level(48px, 48px, 400),
+  $headline-4: mat.define-typography-level(34px, 40px, 400),
+  $headline-5: mat.define-typography-level(24px, 32px, 400),
+  $headline-6: mat.define-typography-level(20px, 32px, 500),
+  $body-1: mat.define-typography-level(16px, 24px, 400),
+  $body-2: mat.define-typography-level(14px, 20px, 400)
+);
+
+// Define o tema claro
+$custom-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-primary-palette,
+    accent: $custom-accent-palette,
+    warn: $custom-warn-palette,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0
+));
+
+// Aplica o tema a todos os componentes do Angular Material
+@include mat.all-component-themes($custom-theme);

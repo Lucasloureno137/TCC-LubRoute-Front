@@ -1,0 +1,59 @@
+<div class="notification-container">
+  <button
+    mat-icon-button
+    (click)="toggleNotifications()"
+    aria-label="Notification icon"
+  >
+    <mat-icon>notifications</mat-icon>
+    <span *ngIf="unreadCount > 0" class="notification-count">{{
+      unreadCount
+    }}</span>
+  </button>
+
+  <div *ngIf="notificationsOpen" class="notification-list">
+    <div class="notification-header">
+      <span class="title">Notificações ({{ unreadCount }})</span>
+    </div>
+
+    <div class="notification-section">
+      <div
+        *ngFor="let notification of paginatedNotifications"
+        class="notification-card"
+        [ngClass]="{ read: notification.read }"
+      >
+        <div class="notification-icon">
+          <mat-icon color="warn">warning</mat-icon>
+        </div>
+
+        <div class="notification-content">
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+          <button
+            class="btn-view"
+            (click)="openNotification(notification); $event.stopPropagation()"
+          >
+            Ver atividades
+          </button>
+        </div>
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          class="btn-view"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+        >
+          Anterior
+        </button>
+
+        <button
+          class="btn-view"
+          (click)="nextPage()"
+          [disabled]="currentPage * itemsPerPage >= notifications.length"
+        >
+          Próximo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

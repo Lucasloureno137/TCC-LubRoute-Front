@@ -1,0 +1,102 @@
+.modal-container {
+  padding: 0;
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+}
+
+.close-button {
+  color: #666;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.modal-content {
+  padding: 24px;
+}
+
+.description {
+  margin-bottom: 16px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.confirmation-text {
+  margin-bottom: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.info-list {
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.info-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info-icon.success {
+  color: #4caf50;
+}
+
+.info-icon.warning {
+  color: #ff9800;
+}
+
+.info-icon.info {
+  color: #2196f3;
+}
+
+.info-item span {
+  color: #555;
+  line-height: 1.4;
+}
+
+.question {
+  margin-top: 20px;
+  margin-bottom: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.cancel-button {
+  color: #666;
+}
+
+.confirm-button {
+  min-width: 180px;
+}

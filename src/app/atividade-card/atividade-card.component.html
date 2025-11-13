@@ -1,0 +1,57 @@
+<div class="atividade-card" [ngClass]="{'atividade-unica': isUnica(), 'maquina-desligada': isMaquinaDesligada()}">
+  <!-- Checkbox no canto superior direito -->
+  <div *ngIf="!dadosAtividade?.executado && !dadosAtividade.future" class="checkbox-container">
+    <input type="checkbox" (change)="toggleSelecionado()" [checked]="selecionado">
+  </div>
+
+  <h2 class="equipamento-nome">{{ dadosAtividade?.equipamentoNome }}</h2>
+
+  <!-- Indicação de atividade única não recorrente -->
+  <div *ngIf="isUnica()" class="atividade-unica-label">
+    Atividade não recorrente
+  </div>
+
+  <div *ngIf="isMaquinaDesligada()" class="maquina-desligada-label">
+    Atividade requer máquina desligada
+  </div>
+
+  <div class="info-linha"><strong>Tag ponto:</strong> <p class="tag-destaque">{{ dadosAtividade?.pontoDeLubrificacaoTag }}</p></div>
+  <div class="info-linha"><strong>Atividade:</strong> {{ dadosAtividade?.atividade }}</div>
+  <div class="info-linha"><strong>Data e hora:</strong> {{ formatarParaData(dadosAtividade?.dataHoraParaExecucao) | date: 'dd/MM/yyyy HH:mm' }}</div>
+  <div class="info-linha" *ngIf="dadosAtividade?.atividade == 'LUBRIFICACAO'"><strong>Produto:</strong> {{ dadosAtividade?.produto }}</div>
+  <div class="info-linha" *ngIf="dadosAtividade?.atividade == 'LUBRIFICACAO'"><strong>Quantidade:</strong> {{ dadosAtividade?.quantidade }}</div>
+  <div class="info-linha" *ngIf="dadosAtividade?.modoAplicacao"><strong>Observação:</strong> <p class="obs-destaque"> {{ dadosAtividade?.modoAplicacao }}</p></div>
+
+
+
+  <!-- Exibe o tempo para executar apenas se não estiver executado -->
+  <div class="info-linha"
+       *ngIf="!dadosAtividade?.executado && !dadosAtividade?.pausado"
+       [ngStyle]="{'color': isAtrasado(dadosAtividade?.tempoParaExecutar) ? '#EE0010' : 'inherit'}">
+    <strong>Tempo para executar:</strong> {{ dadosAtividade?.tempoParaExecutar }}
+  </div>
+
+  <div *ngIf="!dadosAtividade?.executado && !dadosAtividade?.future && !dadosAtividade?.pausado" class="btn-executar">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="selecionado"
+      (click)="emitExecutar()">
+      Executar
+    </button>
+  </div>
+
+
+  <div *ngIf="dadosAtividade?.executado" class="rotina-executada">
+    ROTINA EXECUTADA
+  </div>
+
+  <div *ngIf="dadosAtividade?.pausado && !dadosAtividade?.executado" class="rotina-pausada">
+    ROTINA PAUSADA
+  </div>
+
+  <div *ngIf="dadosAtividade?.future && !dadosAtividade?.executado && !dadosAtividade?.pausado" class="rotina-futura">
+    ROTINA FUTURA
+  </div>
+
+</div>

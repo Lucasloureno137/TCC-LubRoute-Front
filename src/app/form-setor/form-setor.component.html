@@ -1,0 +1,45 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{ isUpdate ? "Editar Setor" : "Novo Setor" }}
+      </h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Informações do Setor</h3>
+      
+      <form class="form-grid" (ngSubmit)="enviarFormulario()">
+        <mat-form-field class="form-field">
+          <mat-label>Descrição</mat-label>
+          <input matInput 
+                 [(ngModel)]="descricao" 
+                 name="descricao"
+                 placeholder="Digite a descrição do setor"
+                 [disabled]="isLoading"
+                 required>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" 
+              class="btn-primary" 
+              [disabled]="!descricao || isLoading"
+              (click)="enviarFormulario()">
+        <i class="material-icons" *ngIf="isLoading">hourglass_empty</i>
+        <i class="material-icons" *ngIf="!isLoading">{{ isUpdate ? "edit" : "save" }}</i>
+        <span *ngIf="!isLoading">{{ isUpdate ? "Atualizar Setor" : "Cadastrar Setor" }}</span>
+        <span *ngIf="isLoading">{{ isUpdate ? "Atualizando..." : "Cadastrando..." }}</span>
+      </button>
+      
+      <app-voltar></app-voltar>
+    </div>
+  </div>
+</div>

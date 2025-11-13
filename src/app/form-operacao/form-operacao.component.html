@@ -1,0 +1,278 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{
+          isUpdate
+            ? "Atualizar rotina para ponto de manutenção"
+            : "Cadastrar rotina para ponto de manutenção"
+        }}
+      </h1>
+      <div *ngIf="isPaused" class="info-pause">
+        <span>Esta rotina está pausada, para retomar clique em continuar</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-layout">
+    <div class="info-card">
+      <div class="equipment-info">
+        <h3 class="info-title">Informações do Equipamento</h3>
+        <p class="info-subtitle">
+          Adicionando rotina para ponto de manutenção do equipamento
+        </p>
+
+        <div class="info-list" *ngIf="equipamento">
+          <div class="info-item">
+            <span class="info-label">Setor:</span>
+            <span class="info-value">{{ equipamento.setor }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Equipamento:</span>
+            <span class="info-value">{{ equipamento.descricao }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Tag:</span>
+            <span class="info-value">{{ equipamento.tag }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lubrication-info">
+        <h3 class="info-title">Informações do Ponto de Manutenção</h3>
+
+        <div class="info-list" *ngIf="detalhe_pt_lub">
+          <div class="info-item">
+            <span class="info-label">Tag:</span>
+            <span class="info-value">{{ detalhe_pt_lub.tag }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Tipo Produto:</span>
+            <span class="info-value">{{
+              detalhe_pt_lub.tipoLubrificante
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Produto:</span>
+            <span class="info-value">{{ detalhe_pt_lub.lubrificante }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Desc Componente:</span>
+            <span class="info-value">{{
+              detalhe_pt_lub.descricaoComponente
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="form-section">
+        <h3 class="form-title">Informações da Rotina</h3>
+
+        <form class="form-grid">
+          <mat-form-field class="form-field">
+            <mat-label>Frequência</mat-label>
+            <mat-select
+              [(ngModel)]="frequenciaSelected"
+              (selectionChange)="selectChange($event.value, 'F')"
+              name="frequencia"
+            >
+              <mat-option
+                *ngFor="let frequencia of frequencias"
+                [value]="frequencia"
+              >
+                {{ frequencia }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div *ngIf="showUnicaInfo" class="info-box">
+            <div class="info-content">
+              <p>
+                As atividades sem recorrência são de caráter emergencial e
+                corretivo. Não geram agendamentos recorrentes e aparecem na fila
+                para execução apenas na data selecionada.
+              </p>
+              <button class="close-button" (click)="hideUnicaInfo()">
+                <i class="material-icons">close</i>
+              </button>
+            </div>
+          </div>
+
+          <mat-form-field class="form-field">
+            <mat-label>Atividade</mat-label>
+            <mat-select
+              [(ngModel)]="atividadeSelected"
+              (selectionChange)="selectChange($event.value, 'A')"
+              name="atividade"
+            >
+              <mat-option
+                *ngFor="let atividade of atividades"
+                [value]="atividade"
+              >
+                {{ atividade }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="form-field">
+            <mat-label>Data Início</mat-label>
+            <input
+              [min]="dataAtual"
+              matInput
+              [matDatepicker]="picker"
+              [(ngModel)]="dataInicio"
+              [readonly]="isUpdate"
+              name="dataInicio"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+              [disabled]="isUpdate"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker [disabled]="isUpdate"></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field class="form-field">
+            <mat-label>Hora Início</mat-label>
+            <input
+              matInput
+              [ngxMatTimepicker]="timepicker"
+              [(ngModel)]="horaInicio"
+              readonly
+              [format]="24"
+              name="horaInicio"
+            />
+            <ngx-mat-timepicker-toggle
+              matSuffix
+              [for]="timepicker"
+            ></ngx-mat-timepicker-toggle>
+            <ngx-mat-timepicker #timepicker [format]="24"></ngx-mat-timepicker>
+          </mat-form-field>
+
+          <ng-container *ngIf="frequenciaSelected === 'Horária'">
+            <mat-form-field class="form-field">
+              <mat-label>Frequência horas</mat-label>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="qtdHoras"
+                min="1"
+                step="1"
+                name="qtdHoras"
+              />
+              <mat-error *ngIf="qtdHoras < 0"
+                >Quantidade não pode ser negativa</mat-error
+              >
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngIf="isLubrificacaoOrManutencao">
+            <mat-form-field class="form-field">
+              <mat-label>Quantidade</mat-label>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="quantidade"
+                min="1"
+                step="1"
+                name="quantidade"
+              />
+              <mat-hint>Quantidade {{ unidadeMedidaSelected }}</mat-hint>
+              <mat-error *ngIf="quantidade < 0"
+                >Quantidade não pode ser negativa</mat-error
+              >
+            </mat-form-field>
+
+            <div class="unidades-medida">
+              <label class="form-label">Unidade de Medida:</label>
+              <mat-radio-group
+                [(ngModel)]="unidadeMedidaSelected"
+                name="unidadeMedida"
+              >
+                <mat-radio-button
+                  *ngFor="let unidade of unidadesMedida"
+                  [value]="unidade"
+                >
+                  {{ unidade }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </ng-container>
+
+          <mat-form-field class="form-field">
+            <mat-label>Modo aplicação (observações)</mat-label>
+            <input matInput [(ngModel)]="modoAplicacao" name="modoAplicacao" />
+          </mat-form-field>
+
+          <mat-form-field class="form-field">
+            <mat-label>Técnico Responsável</mat-label>
+            <mat-select
+              [(ngModel)]="tecnicoSelecionadoId"
+              (selectionChange)="selectChange($event.value, 'T')"
+              [disabled]="tecnicos.length === 0 || isLoading"
+              name="tecnico"
+              required
+            >
+              <mat-option
+                *ngFor="let tecnico of tecnicos"
+                [value]="tecnico.publicId"
+              >
+                {{ tecnico.nome }}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="tecnicos.length === 0"
+              >Não foi encontrado nenhum tecnico</mat-hint
+            >
+          </mat-form-field>
+
+          <div class="checkbox-container">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="atividadeRequerMaquinaDesligada"
+                (change)="onToggleMaquinaDesligada()"
+              />
+               <span class="custom-checkbox"></span>
+              Operação com máquina desligada
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" (click)="enviarFormulario()">
+          <i class="material-icons">{{ isUpdate ? "edit" : "save" }}</i>
+          {{ isUpdate ? "Editar" : "Salvar" }}
+        </button>
+
+        <button class="btn-secondary" (click)="backPage()">
+          <i class="material-icons">arrow_back</i>
+          Cancelar
+        </button>
+
+        <button class="btn-pause" (click)="changePauseStatus()">
+          <i class="material-icons">pause</i>
+          {{ isPaused ? "Continuar Rotina" : "Pausar Rotina" }}
+        </button>
+
+        <button
+          *ngIf="!possuiEstoque"
+          class="btn-stock"
+          (click)="redirectEstoque()"
+        >
+          <i class="material-icons">inventory</i>
+          Atualizar estoque
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner">
+      <i class="material-icons spinning">refresh</i>
+      <p>Carregando...</p>
+    </div>
+  </div>
+</div>

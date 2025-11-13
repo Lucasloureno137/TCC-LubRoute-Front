@@ -1,0 +1,64 @@
+<div class="preferences-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Configurações do Sistema</h1>
+      <app-breadcrumb [items]="breadcrumbItems" [showContainer]="false"></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="info-section">
+      <h3 class="section-title">Sistemática de Execução</h3>
+      <div class="description">
+        <p>
+          Você pode escolher se os operadores precisarão escanear o QR Code ou digitar a TAG antes de executar uma atividade.
+        </p>
+        <p>
+          Essa verificação ajuda a garantir que a execução está sendo feita no ponto correto. Se preferir mais flexibilidade, é possível desativar essa confirmação.
+        </p>
+        <p>
+          Você pode alterar essa configuração a qualquer momento no Dashboard.
+        </p>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="setting-item">
+        <h4 class="setting-title">Confirmação por QR Code/TAG</h4>
+        <div class="radio-group">
+          <mat-radio-group [(ngModel)]="confirmScanPreference" name="confirmScanPreference">
+            <mat-radio-button [value]="true" class="radio-option">
+              <div class="radio-content">
+                <span class="radio-title">Sim, exigir QR Code/TAG</span>
+                <span class="radio-description">Operadores devem escanear o código antes da execução</span>
+              </div>
+            </mat-radio-button>
+            <mat-radio-button [value]="false" class="radio-option">
+              <div class="radio-content">
+                <span class="radio-title">Não, permitir execução sem confirmação</span>
+                <span class="radio-description">Execução livre sem necessidade de escaneamento</span>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        
+        <div class="setting-note">
+          <i class="material-icons">info</i>
+          <span>Esta configuração afeta todas as atividades diárias da empresa</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <button 
+        class="btn-primary" 
+        (click)="onSave()" 
+        [disabled]="isLoading">
+        <i class="material-icons" *ngIf="isLoading">hourglass_empty</i>
+        <i class="material-icons" *ngIf="!isLoading">save</i>
+        <span *ngIf="!isLoading">Salvar Configuração</span>
+        <span *ngIf="isLoading">Salvando...</span>
+      </button>
+    </div>
+  </div>
+</div>

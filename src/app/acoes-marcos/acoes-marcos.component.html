@@ -1,0 +1,231 @@
+<div class="logs-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Logs do Sistema</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="openDateRangeModal()">
+        <i class="material-icons">calendar_month</i>
+        Filtrar Período
+      </button>
+      <button class="btn-secondary" (click)="clearFilters()">
+        <i class="material-icons">clear</i>
+        Limpar Filtros
+      </button>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+
+      <div class="primary-filters">
+        <div class="search-container">
+          <div class="search-box">
+            <input
+              type="text"
+              placeholder="Pesquisar por marco, tabela, usuário..."
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+              class="search-input"
+            />
+            <button class="search-btn" (click)="onSearch()">
+              <i class="material-icons">search</i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="advanced-filters-toggle">
+        <button class="toggle-btn" (click)="toggleFiltrosAvancados()">
+          <i class="material-icons">{{
+            mostrarFiltrosAvancados ? "expand_less" : "expand_more"
+          }}</i>
+          {{
+            mostrarFiltrosAvancados
+              ? "Ocultar filtros avançados"
+              : "Mostrar filtros avançados"
+          }}
+        </button>
+      </div>
+
+      <div class="advanced-filters" *ngIf="mostrarFiltrosAvancados">
+        <div class="filters-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Filtrar por Marco</mat-label>
+            <mat-select
+              [(ngModel)]="filtroMarco"
+              (selectionChange)="applyFilter()"
+            >
+              <mat-option value="">Todos</mat-option>
+              <mat-option *ngFor="let marco of tiposMarco" [value]="marco">{{
+                marco
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Filtro de Tabela -->
+          <mat-form-field appearance="outline">
+            <mat-label>Filtrar por Tabela</mat-label>
+            <mat-select
+              [(ngModel)]="filtroTabela"
+              (selectionChange)="applyFilter()"
+            >
+              <mat-option value="">Todas</mat-option>
+              <mat-option *ngFor="let tabela of tiposTabela" [value]="tabela">{{
+                tabela
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="period-info" *ngIf="dataInicioExibicao && dataFimExibicao">
+        <i class="material-icons">date_range</i>
+        <span>Período: {{ dataInicioExibicao }} a {{ dataFimExibicao }}</span>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-actions">
+        <div class="results-info">
+          <span *ngIf="!isLoading"
+            >{{ filteredAcoesMarcos.length }} registros encontrados</span
+          >
+        </div>
+
+        <div class="action-buttons">
+          <button
+            class="btn-primary"
+            (click)="onTogglePdf()"
+            [disabled]="filteredAcoesMarcos.length === 0"
+          >
+            <i class="material-icons">picture_as_pdf</i>
+            {{ gerarDocumento ? "Fechar PDF" : "Gerar PDF" }}
+          </button>
+        </div>
+      </div>
+
+      <div class="loading-container" *ngIf="isLoading">
+        <div class="loading-spinner">
+          <i class="material-icons spinning">refresh</i>
+          <p>Carregando dados...</p>
+        </div>
+      </div>
+
+      <div class="table-container" *ngIf="!isLoading">
+        <table class="logs-table" *ngIf="getPaginatedAcoesMarcos().length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Marco</th>
+              <th>Tabela</th>
+              <th>Data/Hora</th>
+              <th>Usuário</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let acao of getPaginatedAcoesMarcos()"
+              class="table-row"
+            >
+              <td>{{ acao.id }}</td>
+              <td class="marco-cell">{{ acao.marco }}</td>
+              <td class="tabela-cell">{{ acao.tabela }}</td>
+              <td class="data-cell">{{ acao.dataHora }}</td>
+              <td class="usuario-cell">{{ acao.usuario }}</td>
+              <td class="observacao-cell">{{ acao.observacao }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="getPaginatedAcoesMarcos().length === 0">
+          <i class="material-icons">search_off</i>
+          <p>Nenhum registro encontrado</p>
+          <span>Tente ajustar os filtros ou o período selecionado</span>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1 && !isLoading">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select
+            [(ngModel)]="itemsPerPage"
+            (change)="updatePagination(); currentPage = 1; applyFilter()"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">first_page</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">chevron_right</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pdf-section" *ngIf="gerarDocumento">
+    <div class="content-card">
+      <div class="pdf-header">
+        <h3>Visualização do PDF</h3>
+        <button class="close-pdf-btn" (click)="onTogglePdf()">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      <app-pdf-generator
+        [titulo]="'Registro de Ações do Sistema'"
+        [cabecalho]="pdfHeaders"
+        [dados]="pdfData"
+        [download]="false"
+      >
+      </app-pdf-generator>
+    </div>
+  </div>
+</div>

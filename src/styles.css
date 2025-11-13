@@ -1,0 +1,110 @@
+/* You can add global styles to this file, and also import other style files */
+
+body, button, input, textarea {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif !important;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  margin: 0;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* full-calendar */
+.fc-popover {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ========= SWEETALERT2 - CUSTOMIZAÇÃO MATERIAL ========= */
+
+/* Fonte Roboto (igual ao Angular Material) */
+.swal2-popup {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+}
+
+/* Cor do título */
+.swal2-title {
+  color: #212121;
+  font-weight: 500;
+}
+
+/* Cor do texto */
+.swal2-html-container {
+  color: #424242;
+  font-size: 15px;
+}
+
+/* Botão principal (usa a cor primária do Material) */
+.swal2-confirm {
+  background-color: #ff6b35 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  color: white !important;
+  padding: 0.6rem 1.5rem !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.swal2-confirm:hover {
+  background-color: #e65f2f !important;
+}
+
+/* Botão cancelar (cor secundária / azul) */
+.swal2-cancel {
+  background-color: #1976d2 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  color: white !important;
+  padding: 0.6rem 1.5rem !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.swal2-cancel:hover {
+  background-color: #1565c0 !important;
+}
+
+/* Ícones */
+.swal2-icon.swal2-info {
+  color: #2196f3 !important;
+  border-color: #2196f3 !important;
+}
+.swal2-icon.swal2-success {
+  color: #4caf50 !important;
+  border-color: #4caf50 !important;
+}
+.swal2-icon.swal2-error {
+  color: #f44336 !important;
+  border-color: #f44336 !important;
+}

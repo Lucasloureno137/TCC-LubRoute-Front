@@ -1,0 +1,144 @@
+<div class="relatos-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Relatos Técnicos</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button
+      class="btn-primary"
+      [disabled]="!(dataLayer.length > 0)"
+      (click)="onGerarPdf()"
+    >
+      <i class="material-icons">picture_as_pdf</i>
+      Gerar PDF
+    </button>
+  </div>
+
+  <div *ngIf="dataInicioExibicao && dataFimExibicao" class="date-range-info">
+    <p><span>Data Inicial:</span> {{ dataInicioExibicao  }}</p>
+    <p><span>Data Final:</span> {{ dataFimExibicao  }}</p>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+      <div class="filters-row">
+        <button class="btn-filter" (click)="openDateRangeModal()">
+          <i class="material-icons">calendar_month</i>
+          Filtrar por data
+        </button>
+      </div>
+    </div>
+
+    <div class="table-section" *ngIf="!isLoading">
+      <div class="table-container">
+        <table class="relatos-table">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>DATA</th>
+              <th>OPERADOR</th>
+              <th>SETOR</th>
+              <th>EQUIPAMENTO</th>
+              <th>PONTO</th>
+              <th>RELATO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of getPaginatedData()">
+              <td>{{ item.n }}</td>
+              <td>{{ item.data }}</td>
+              <td>{{ item.operador }}</td>
+              <td>{{ item.setor }}</td>
+              <td>{{ item.equipamento }}</td>
+              <td>{{ item.ponto }}</td>
+              <td>{{ item.observacao }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="dataLayer.length === 0">
+          <i class="material-icons">assignment</i>
+          <p>Nenhum dado encontrado para o período selecionado</p>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select
+            [(ngModel)]="itemsPerPage"
+            (change)="updatePagination(); currentPage = 1"
+          >
+            <option value="9">9</option>
+            <option value="18">18</option>
+            <option value="27">27</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">first_page</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">chevron_right</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading-section" *ngIf="isLoading">
+      <div class="loading-spinner">
+        <i class="material-icons spinning">refresh</i>
+        <p>Carregando dados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-pdf" *ngIf="gerarDocumento">
+  <app-pdf-generator
+    [titulo]="'Relatos Técnicos'"
+    [cabecalho]="pdfHeaders"
+    [dados]="pdfData"
+    [download]="false"
+  >
+  </app-pdf-generator>
+</div>

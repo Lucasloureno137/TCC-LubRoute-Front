@@ -1,0 +1,44 @@
+<div class="modal-container">
+  <div class="modal-header">
+    <h2 class="modal-title">Confirmar Alteração de Recorrência?</h2>
+    <button mat-icon-button class="close-button" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <div class="modal-content">
+    <p class="description">
+      Atenção, você está alterando os campos: [<strong>Frequência</strong><span *ngIf="data.qtdHorasAlterada">, <strong>Frequência Horas</strong></span>] a alteração desses campos afetam diretamente a programação das atividades.
+    </p>
+    
+    <p class="confirmation-text">Ao confirmar esta alteração:</p>
+    
+    <div class="info-list">
+      <div class="info-item">
+        <mat-icon class="info-icon success">check_circle</mat-icon>
+        <span>Uma nova operação será criada com as configurações atualizadas</span>
+      </div>
+      
+      <div class="info-item">
+        <mat-icon class="info-icon warning">pause_circle</mat-icon>
+        <span>A operação atual será suspensa automaticamente</span>
+      </div>
+      
+      <div class="info-item">
+        <mat-icon class="info-icon info">assignment</mat-icon>
+        <span>O histórico da operação anterior será preservado</span>
+      </div>
+    </div>
+    
+    <p class="question">Deseja continuar?</p>
+  </div>
+  
+  <div class="modal-actions">
+    <button mat-button class="cancel-button" (click)="onCancelar()">
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" class="confirm-button" (click)="onConfirmar()">
+      Sim, Criar Nova Operação
+    </button>
+  </div>
+</div>

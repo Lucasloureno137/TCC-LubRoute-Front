@@ -1,0 +1,17 @@
+<!-- notification-dialog.component.html -->
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  <p>{{ data.message }}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close>Fechar</button>
+
+  <button *ngIf="!data.allowMarkAsRead" mat-raised-button mat-dialog-close (click)="viewActivities()">Ver atividades</button>
+
+  <!-- Exibe um info para informar que a notificação ira persistir até que todas as atividades sejam executadas -->
+  <div *ngIf="!data.allowMarkAsRead" class="info">
+    <mat-icon>info</mat-icon>
+    <span>Esta notificação irá persistir até que todas as atividades sejam executadas.</span>
+  </div>
+
+</div>

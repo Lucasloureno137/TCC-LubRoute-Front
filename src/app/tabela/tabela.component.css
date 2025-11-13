@@ -1,0 +1,52 @@
+.table-container {
+  overflow: auto;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.mat-table {
+  min-width: 100%;
+}
+
+.selected {
+  background-color: 	#F5F5F5!important;
+}
+
+.linha-tabela {
+  cursor: pointer !important;
+}
+
+.filtro-tabela{
+  width: 100%;
+}
+
+.hidden-column {
+  display: none;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #757575;
+}
+
+.elemento-desabilitado {
+  color: 	#084496;
+  cursor: default !important;
+  font-weight: bold;
+}
+
+.tempo-expirado{
+  color:	#EE0010;
+  font-weight: bold;
+}
+
+.operacao-suspensa {
+  background-color: #f5f5f5 !important;
+  opacity: 0.6;
+  cursor: pointer !important;
+}

@@ -1,0 +1,176 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Editar Produto</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button class="btn-secondary" (click)="voltarParaListagem()">
+      <i class="material-icons">arrow_back</i>
+      Voltar para Listagem
+    </button>
+  </div>
+
+  <div class="content-card">
+    <!-- Produto Base -->
+    <div class="produto-base-section">
+      <h3 class="section-title">Dados do Produto Base</h3>
+
+      <mat-form-field>
+        <mat-label>Nome</mat-label>
+        <input
+          matInput
+          [(ngModel)]="produtoBase.nome"
+          maxlength="30"
+          (ngModelChange)="formatarParaMaiusculo($event, 'nome')"
+          (input)="atualizarLimiteSubproduto()"
+        />
+        <mat-hint align="end">{{ produtoBase.nome.length || 0 }}/30</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Tipo Produto</mat-label>
+        <mat-select
+          [(ngModel)]="produtoBase.tipoLubrificante"
+          (ngModelChange)="defineUnidadesMedida()"
+        >
+          <mat-option value="GRAXA">GRAXA</mat-option>
+          <mat-option value="LIQUIDO">LÍQUIDO</mat-option>
+          <mat-option value="PECA">PEÇA</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Sub Produtos Existentes -->
+    <div class="subprodutos-section">
+      <h3 class="section-title">Subprodutos</h3>
+
+      <div class="scroll-container">
+        <table
+          mat-table
+          [dataSource]="produtoBase.produtos"
+          class="mat-elevation-z8"
+        >
+          <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let produto">{{ produto.nome }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantidade">
+            <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+            <td mat-cell *matCellDef="let produto">{{ produto.qtdFormat }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="codigo">
+            <th mat-header-cell *matHeaderCellDef>Código</th>
+            <td mat-cell *matCellDef="let produto">
+              {{
+                produto.codigo ? produto.codigo : "A ser gerado pelo sistema"
+              }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acao">
+            <th mat-header-cell *matHeaderCellDef>Ação</th>
+            <td mat-cell *matCellDef="let produto">
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removerSubProduto(produto)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Adicionar Novo Sub Produto -->
+    <div class="adicionar-subproduto-section">
+      <h3 class="section-title">Adicionar Novo Subproduto</h3>
+      <p>Inclua novos produtos que compõem o produto base.</p>
+
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="no-wrap-prefix"
+      >
+        <mat-label>Subproduto Nome</mat-label>
+        <span matTextPrefix>{{ produtoBase.nome }} - </span>
+        <input
+          matInput
+          [(ngModel)]="subProduto.nome"
+          [maxlength]="limiteSubproduto"
+          (ngModelChange)="formatarParaMaiusculo($event, 'subproduto')"
+        />
+        <mat-hint align="end"
+          >{{ subProduto.nome.length || 0 }}/{{ limiteSubproduto }}</mat-hint
+        >
+      </mat-form-field>
+
+      <mat-form-field *ngIf="false">
+        <mat-label>Código</mat-label>
+        <input
+          matInput
+          [(ngModel)]="subProduto.codigo"
+          (input)="validateCodigoLength($event)"
+          maxlength="10"
+          pattern="[0-9]*"
+          placeholder="Apenas números"
+        />
+        <mat-hint align="end">{{ subProduto.codigo.length || 0 }}/10</mat-hint>
+      </mat-form-field>
+
+      <p *ngIf="false">
+        <mat-slide-toggle
+          [(ngModel)]="isCodigoAtivo"
+          (ngModelChange)="onToggleChange($event)"
+          matTooltip="Utilize para informar o código da nota fiscal"
+        >
+          Informar código
+        </mat-slide-toggle>
+      </p>
+
+      <mat-form-field>
+        <mat-label>Quantidade</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="subProduto.qtd"
+          (click)="limparCampo($event)"
+        />
+      </mat-form-field>
+
+      <!-- Unidades de Medida -->
+      <div class="unidades-medida">
+        <label class="section-label">Unidade de Medida</label>
+        <mat-radio-group [(ngModel)]="subProduto.unidade">
+          <mat-radio-button
+            *ngFor="let unidade of unidadeMedida"
+            [value]="unidade"
+          >
+            {{ unidade }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <button class="btn-primary" (click)="adicionarSubProduto()">
+        Adicionar Subproduto
+      </button>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+      <button class="btn-primary" (click)="salvarAlteracoes()">
+        Salvar Alterações
+      </button>
+      <button class="btn-secondary" (click)="cancelar()">Cancelar</button>
+    </div>
+  </div>
+</div>

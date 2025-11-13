@@ -1,0 +1,119 @@
+<div class="setores-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Setores Cadastrados</h1>
+      <app-breadcrumb [items]="breadcrumbItems" [showContainer]="false"></app-breadcrumb>
+    </div>
+    <button class="btn-primary" (click)="onAddSetor()">
+      <i class="material-icons">add</i>
+      Novo Setor
+    </button>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+      <div class="search-container">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Digite para pesquisar..." 
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            class="search-input">
+          <button class="search-btn" (click)="onSearch()">
+            <i class="material-icons">search</i>
+          </button>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-secondary" (click)="onEditSetor()">
+            <i class="material-icons">edit</i>
+            Editar
+          </button>
+          <button class="btn-danger" (click)="onDeleteSetor()">
+            <i class="material-icons">delete</i>
+            Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-container">
+        <table class="setores-table">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>NOME</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              *ngFor="let setor of getPaginatedSetores()" 
+              (click)="onRowClick(setor)"
+              [class.selected]="isSelected(setor)"
+              class="table-row">
+              <td>{{ setor.id }}</td>
+              <td class="setor-name">{{ setor.nome }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="getPaginatedSetores().length === 0">
+          <i class="material-icons">business</i>
+          <p>Nenhum setor encontrado</p>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select [(ngModel)]="itemsPerPage" (change)="updatePagination(); currentPage = 1">
+            <option value="5">5</option>
+            <option value="9">9</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1">
+            <i class="material-icons">first_page</i>
+          </button>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1">
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages">
+            <i class="material-icons">chevron_right</i>
+          </button>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages">
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

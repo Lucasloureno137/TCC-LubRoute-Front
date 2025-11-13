@@ -1,0 +1,124 @@
+<!-- <div *ngIf="showInfo" class="info">
+  <button class="close-btn" (click)="showInfo = false" aria-label="Fechar mensagem">&times;</button>
+  <strong>Atenção:</strong> Os usuários cadastrados terão permissão de administrador. Cadastre com cautela.
+</div>
+<div class="form-container">
+  <h1>{{isEdit ? 'Editar Usuário': 'Cadastrar Usuário'}}</h1>
+  <mat-form-field>
+      <div>
+          <mat-label>Nome</mat-label>
+          <input matInput [(ngModel)]="usuario.nome">
+      </div>
+  </mat-form-field>
+  <mat-form-field>
+    <div>
+        <mat-label [ngClass]="{'invalid': invalidCpf}">CPF</mat-label>
+        <input matInput [(ngModel)]="usuario.cpf" (ngModelChange)="mascaraCpf()">
+        <mat-error *ngIf="invalidCpf">CPF inválido</mat-error>
+    </div>
+</mat-form-field>
+<mat-form-field>
+  <div>
+      <mat-label [ngClass]="{'invalid': invalidEmail}">Email</mat-label>
+      <input matInput [(ngModel)]="usuario.email" (ngModelChange)="verificarEmail()">
+      <mat-error *ngIf="invalidEmail">Email inválido</mat-error>
+  </div>
+</mat-form-field>
+<mat-form-field>
+  <div>
+      <mat-label>Endereco</mat-label>
+      <input matInput [(ngModel)]="usuario.endereco">
+  </div>
+</mat-form-field>
+
+  <div>
+      <button mat-raised-button color="primary" (click)="enviarFormulario()">{{isEdit ? 'Editar' : 'Salvar'}}</button>
+      <app-voltar></app-voltar>
+  </div>
+</div> -->
+
+
+<div *ngIf="showInfo" class="info-alert">
+  <div class="alert-content">
+    <i class="material-icons">warning</i>
+    <div class="alert-text">
+      <strong>Atenção:</strong> Os usuários cadastrados terão permissão de administrador. Cadastre com cautela.
+    </div>
+    <button class="close-btn" (click)="showInfo = false" aria-label="Fechar mensagem">
+      <i class="material-icons">close</i>
+    </button>
+  </div>
+</div>
+
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{ isEdit ? "Editar Usuário" : "Novo Usuário" }}
+      </h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Informações do Usuário</h3>
+      
+      <form class="form-grid" (ngSubmit)="enviarFormulario()">
+        <mat-form-field class="form-field">
+          <mat-label>Nome</mat-label>
+          <input matInput 
+                 [(ngModel)]="usuario.nome" 
+                 name="nome"
+                 placeholder="Digite o nome do usuário"
+                 required>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>CPF</mat-label>
+          <input matInput 
+                 [(ngModel)]="usuario.cpf" 
+                 name="cpf"
+                 placeholder="Digite o CPF"
+                 (ngModelChange)="mascaraCpf()"
+                 required>
+          <mat-error *ngIf="invalidCpf">CPF inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Email</mat-label>
+          <input matInput 
+                 [(ngModel)]="usuario.email" 
+                 name="email"
+                 type="email"
+                 placeholder="Digite o email"
+                 (ngModelChange)="verificarEmail()"
+                 required>
+          <mat-error *ngIf="invalidEmail">Email inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Endereço</mat-label>
+          <input matInput 
+                 [(ngModel)]="usuario.endereco" 
+                 name="endereco"
+                 placeholder="Digite o endereço">
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" 
+              class="btn-primary" 
+              (click)="enviarFormulario()">
+        <i class="material-icons">{{ isEdit ? "edit" : "save" }}</i>
+        <span>{{ isEdit ? "Atualizar Usuário" : "Cadastrar Usuário" }}</span>
+      </button>
+      
+      <app-voltar></app-voltar>
+    </div>
+  </div>
+</div>

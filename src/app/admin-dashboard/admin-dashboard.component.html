@@ -1,0 +1,80 @@
+<div class="main">
+  <div class="col">
+     <h2>Admin dashboard</h2>
+     <div fxLayout="column" fxLayoutGap="10px">
+       <mat-card>
+         <mat-card-content>
+           <p class="info-line">
+             <mat-icon class="info-icon">business</mat-icon>
+             <span><b> Nome:</b> {{ userName }}</span>
+           </p>
+           <p class="info-line">
+             <mat-icon class="info-icon">date_range</mat-icon>
+             <span><b> Data:</b> {{ currentDate }} | {{currentTime}}</span>
+           </p>
+         </mat-card-content>
+       </mat-card>
+     </div>
+   </div>
+
+<div class="col">
+  <h2>Painel</h2>
+
+
+  <!-- Cards do Painel -->
+  <button mat-raised-button class="btn-dashboard" (click)="goToAtividades('DIARIA')">
+     <mat-icon>checklist_rtl</mat-icon>
+     Atividades do dia
+  </button>
+
+  <button mat-raised-button class="btn-dashboard" (click)="goToAtividades('SEMANAL')">
+     <mat-icon>checklist_rtl</mat-icon>
+     Atividades da Semana
+  </button>
+
+  <button mat-raised-button class="btn-dashboard" (click)="goToAtividades('CALENDAR')">
+    <mat-icon>checklist_rtl</mat-icon>
+    Calendário de atividades
+   </button>
+
+  <button mat-raised-button matBadge={{clientesCadastros}} class="btn-dashboard" (click)="navigateTo('admin/app-lista-clientes')">
+    <mat-icon>group</mat-icon>
+    Clientes cadastrados
+ </button>
+
+  <button mat-raised-button matBadge={{produtosEstoque}} class="btn-dashboard" (click)="navigateTo('admin/app-selecionar-empresa/baixo-estoque-consulta')">
+     <mat-icon>trending_down</mat-icon>
+     Clientes Baixo Estoque
+  </button>
+
+</div>
+
+<div class="col">
+  <h2>Controles</h2>
+  <div class="button-container">
+  <!-- Botões de Controle -->
+
+  <div *ngFor="let button of controlButtons">
+     <div class="button-container-item">
+        <h3>{{button.controlName}}</h3>
+         <div class="button-container-item-btn">
+           <button mat-flat-button color="primary" (click)="navigateTo(button.link)">
+              {{ button.title }}
+           </button>
+           <button mat-icon-button color="primary" [matMenuTriggerFor]="menu" [disabled]="!button.itens || button.itens.length === 0">
+              <mat-icon>arrow_drop_down</mat-icon>
+           </button>
+           <mat-menu #menu="matMenu" class="menuAbaixo" yPosition="below" xPosition="before">
+              <button mat-menu-item *ngFor="let item of button.itens" (click)="navigateTo(item.link)">
+                 {{ item.nome }}
+              </button>
+           </mat-menu>
+        </div>
+     </div>
+  </div>
+</div>
+
+</div>
+
+
+</div>

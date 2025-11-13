@@ -1,0 +1,109 @@
+<!-- <div class="form-container">
+  <h1>{{isEdit ? 'Editar Cliente': 'Cadastrar Cliente'}}</h1>
+  <mat-form-field>
+      <div>
+          <mat-label>Nome</mat-label>
+          <input matInput [(ngModel)]="cliente.nome">
+      </div>
+  </mat-form-field>
+  <mat-form-field>
+    <div>
+        <mat-label [ngClass]="{'invalid': invalidCnpj}">Cnpj</mat-label>
+        <input matInput [(ngModel)]="cliente.cnpj" (ngModelChange)="mascaraCnpj()">
+        <mat-error *ngIf="invalidCnpj">Cnpj inválido</mat-error>
+    </div>
+</mat-form-field>
+<mat-form-field>
+  <div>
+      <mat-label [ngClass]="{'invalid': invalidEmail}">Email</mat-label>
+      <input matInput [(ngModel)]="cliente.email" (ngModelChange)="verificarEmail()">
+      <mat-error *ngIf="invalidEmail">Email inválido</mat-error>
+  </div>
+</mat-form-field>
+<mat-form-field>
+  <div>
+      <mat-label>Endereco</mat-label>
+      <input matInput [(ngModel)]="cliente.endereco">
+  </div>
+</mat-form-field>
+
+  <div>
+      <button mat-raised-button color="primary" (click)="enviarFormulario()">{{isEdit ? 'Editar' : 'Salvar'}}</button>
+      <app-voltar></app-voltar>
+  </div>
+</div>
+ -->
+
+
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{ isEdit ? "Editar Cliente" : "Novo Cliente" }}
+      </h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Informações do Cliente</h3>
+      
+      <form class="form-grid" (ngSubmit)="enviarFormulario()">
+        <mat-form-field class="form-field">
+          <mat-label>Nome</mat-label>
+          <input matInput 
+                 [(ngModel)]="cliente.nome" 
+                 name="nome"
+                 placeholder="Digite o nome do cliente"
+                 required>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>CNPJ</mat-label>
+          <input matInput 
+                 [(ngModel)]="cliente.cnpj" 
+                 name="cnpj"
+                 placeholder="Digite o CNPJ"
+                 (ngModelChange)="mascaraCnpj()"
+                 required>
+          <mat-error *ngIf="invalidCnpj">CNPJ inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Email</mat-label>
+          <input matInput 
+                 [(ngModel)]="cliente.email" 
+                 name="email"
+                 type="email"
+                 placeholder="Digite o email"
+                 (ngModelChange)="verificarEmail()"
+                 required>
+          <mat-error *ngIf="invalidEmail">Email inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Endereço</mat-label>
+          <input matInput 
+                 [(ngModel)]="cliente.endereco" 
+                 name="endereco"
+                 placeholder="Digite o endereço">
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" 
+              class="btn-primary" 
+              (click)="enviarFormulario()">
+        <i class="material-icons">{{ isEdit ? "edit" : "save" }}</i>
+        <span>{{ isEdit ? "Atualizar Cliente" : "Cadastrar Cliente" }}</span>
+      </button>
+      
+      <app-voltar></app-voltar>
+    </div>
+  </div>
+</div>

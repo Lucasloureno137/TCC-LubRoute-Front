@@ -1,0 +1,47 @@
+<header class="header">
+  <div class="header-content">
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <div *ngIf="selectedCompany" class="company-name-container">
+      <div class="company-name-container-2">
+        <mat-icon>business</mat-icon>
+        <div>{{ selectedCompany }}</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <app-notification></app-notification>
+
+      <button
+        *ngIf="selectedCompany"
+        mat-icon-button
+        [matMenuTriggerFor]="settingsMenu"
+      >
+        <mat-icon>settings</mat-icon>
+      </button>
+
+      <mat-menu #settingsMenu="matMenu">
+        <button mat-menu-item (click)="onChangeCompany()">
+          <mat-icon>business</mat-icon>
+          <span>Alterar empresa</span>
+        </button>
+      </mat-menu>
+
+      <div class="user-profile" [matMenuTriggerFor]="userMenu">
+        <div class="user-avatar">
+          {{ userInitials }}
+        </div>
+        <span class="user-name">{{ userName }}</span>
+      </div>
+
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</header>

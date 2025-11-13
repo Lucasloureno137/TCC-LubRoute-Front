@@ -1,0 +1,159 @@
+.button-container {
+    display: flex;
+    flex-direction: row; /* Ensure each set of buttons is in a new row */
+    flex-wrap: wrap;
+    gap: 5px; /* Espaçamento entre os itens */
+  }
+
+  .button-container h3 {
+    margin-bottom: 0px;
+  }
+
+  .button-container-item {
+    flex: 1 1 100%; /* Cada item ocupa 100% da largura do contêiner */
+    box-sizing: border-box; /* Inclui padding e border na largura total do elemento */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .button-container-item-btn{
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Vertically align the buttons */
+  }
+
+  .btn-dashboard {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    margin-bottom: 15rem;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  .info-line {
+    display: flex;
+    align-items: center;
+  }
+
+  .info-icon {
+    margin-right: 5px;
+  }
+
+  .col{
+    margin-bottom: 1rem;
+  }
+
+  /* Media query for mobile screens */
+  @media (max-width: 600px) {
+    .main {
+      margin-left: 20px;
+    }
+  }
+
+  .metrics-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+
+  .metric-card {
+    background-color: #f5f5f5; /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1 1 150px; /* Fixed width for each card */
+    margin: 5px; /* Add margin to ensure proper spacing */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 150px; /* Set a fixed height to make the card square */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+  }
+
+  .metric-card:hover {
+    transform: translateY(-5px); /* Slightly lift the card on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .metric-card mat-card-title {
+    font-size: 0.875rem; /* Smaller font size for the title */
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center; /* Center align title text */
+    color: #333; /* Dark grey color for the title */
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #673ab7; /* Primary color for the value */
+  }
+
+  /* Media query for mobile screens */
+  @media (max-width: 600px) {
+    .metric-card {
+      flex: 1 1 calc(50% - 10px); /* Two cards per row on mobile */
+      height: 120px; /* Adjust height for mobile */
+      max-width: 120px; /* Ensure the card is square */
+    }
+
+    .metric-card mat-card-title {
+      font-size: 0.75rem; /* Further reduce font size for mobile */
+    }
+
+    .metric-value {
+      font-size: 1rem; /* Further reduce font size for mobile */
+    }
+
+    .metric-value {
+      font-size: 1.2rem; /* Reduce font size for mobile */
+    }
+  }
+
+  .rotated {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+  }
+
+  .collapsible-title {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .collapsible-title mat-icon {
+    margin-right: 8px;
+  }
+
+  .no-metrics {
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  .periodo-apurado {
+    background-color: #d0e7ff; /* Light blue background */
+    color: #003366; /* Dark blue text for contrast */
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 500;
+  }

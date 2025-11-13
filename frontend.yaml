@@ -1,0 +1,11 @@
+service: frontend
+runtime: nodejs22  # ou a versão que você escolher
+handlers:
+  - url: /(.+\.(css|js|html|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json))
+    static_files: dist/lubvel-front/browser/\1
+    upload: dist/lubvel-front/browser/(.+\.(css|js|html|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json))
+
+  # Serve the main page for all other URLs
+  - url: /.*
+    static_files: dist/lubvel-front/browser/index.html
+    upload: dist/lubvel-front/browser/index.html

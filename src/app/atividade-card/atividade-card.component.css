@@ -1,0 +1,123 @@
+.atividade-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para o card */
+  padding: 16px;
+  margin: 16px;
+  width: 300px;  /* Largura fixa */
+  min-height: 300px; /* Altura mínima para o card */
+  background-color: #fff;
+  border-radius: 8px;
+  text-align: left;
+  position: relative;
+  display: flex;
+  flex-direction: column; /* Organiza os itens verticalmente */
+  justify-content: space-between; /* Espaça os itens de forma equilibrada */
+}
+
+/* Estilo especial para atividades únicas (não recorrentes) */
+.atividade-unica {
+  background-color: #FFF3E0; /* Tom suave de laranja/âmbar */
+  border-left: 4px solid #FF9800; /* Borda esquerda em tom mais forte de laranja */
+}
+
+/* Estilo para o texto indicativo de atividade não recorrente */
+.atividade-unica-label {
+  background-color: #FF9800;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.maquina-desligada {
+  background-color: #FDEDED; /* Tom suave de vermelho */
+  border-left: 4px solid #FF5252; /* Borda esquerda em tom mais forte de vermelho */
+}
+
+.maquina-desligada-label {
+  background-color: #FF5252;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+
+.checkbox-container {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  zoom: 1.5; /* Aumenta o checkbox em 1.5 vezes */
+}
+
+.equipamento-nome {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #084496;
+  margin-bottom: 12px;
+}
+
+.info-linha {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.rotina-executada {
+  color: limegreen;
+  font-weight: bold;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.rotina-futura {
+  color: #FF9800 ;
+  font-style: italic;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.rotina-pausada {
+  color: #FF9800;
+  font-weight: bold;
+  margin-top: 12px;
+  text-align: center;
+}
+
+button {
+  align-self: center; /* Centraliza o botão horizontalmente */
+  margin-top: auto; /* Faz o botão ficar colado na parte de baixo */
+}
+
+.ligth {
+  font-style: italic;
+  color: #666;
+}
+
+.btn-executar {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente o conteúdo */
+  align-items: center;     /* Centraliza verticalmente, caso seja necessário */
+}
+
+.tag-destaque {
+  display: inline;
+  text-decoration: underline;
+  font-size: 1.2rem;
+  color: #084496;
+  font-weight: 500;
+}
+
+.obs-destaque {
+  display: inline;
+  font-size: 1rem;
+  color: #084496;
+  font-weight: 500;
+}

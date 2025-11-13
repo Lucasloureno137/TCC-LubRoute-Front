@@ -1,0 +1,28 @@
+<form [formGroup]="redefinirSenhaForm" (ngSubmit)="onSubmit($event)">
+  <mat-card>
+    <div *ngIf="erroEncontrado" class="error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Campo de nova senha -->
+    <mat-form-field class="no-underline">
+      <mat-label>Nova Senha</mat-label>
+      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="novaSenha" required>
+      <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Campo de confirmação de senha -->
+    <mat-form-field class="no-underline">
+      <mat-label>Confirme a Nova Senha</mat-label>
+      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="confirmaSenha" required>
+      <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Botão de redefinir senha -->
+    <button mat-raised-button color="primary" type="submit">Redefinir Senha</button>
+  </mat-card>
+</form>

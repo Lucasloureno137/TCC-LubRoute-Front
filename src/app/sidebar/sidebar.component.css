@@ -1,0 +1,145 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100dvh;
+  background-color: #1F2937;
+  color: white;
+  overflow-y: auto;
+  z-index: 1000;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition: transform 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .section-header,
+.sidebar.collapsed .sidebar-header img {
+  display: none;
+}
+
+.sidebar.collapsed .menu-icon {
+  margin-right: 0;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* Overlay para fechar ao clicar fora */
+.sidebar-overlay {
+  display: none;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 18px;
+  border-bottom: 1px solid #34495e;
+  justify-content: space-between;
+}
+
+.brand {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.menu-section {
+  margin-bottom: 30px;
+}
+
+.section-header {
+  color: #95a5a6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 20px 10px 20px;
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  margin-bottom: 5px;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #bdc3c7;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.menu-link:hover {
+  background-color: #34495e;
+  color: white;
+}
+
+.menu-link.active {
+  background-color: #FF6600;
+  color: white;
+  border-radius: 8px;
+  margin: 0 10px;
+  padding: 12px;    
+}
+
+.menu-icon {
+  font-size: 20px;
+  margin-right: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}

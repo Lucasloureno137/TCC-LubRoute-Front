@@ -1,0 +1,518 @@
+<div class="activities-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Atividades</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button
+      class="btn-primary"
+      (click)="onAddActivity()"
+      *ngIf="userManager || isAdmin"
+    >
+      <i class="material-icons">add</i>
+      Adicionar Atividade
+    </button>
+  </div>
+
+  <div *ngIf="startDate && endDate" class="date-range-info">
+    <p><span>Data Inicial:</span> {{ startDate | date : "dd/MM/yyyy" }}</p>
+    <p><span>Data Final:</span> {{ endDate | date : "dd/MM/yyyy" }}</p>
+  </div>
+
+  <div class="objective-card" *ngIf="executionStats.total > 0">
+    <div class="objective-content">
+      <div class="objective-info">
+        <h3 class="objective-title">Objetivo Diário</h3>
+        <div class="stats">
+          <span class="executed">{{ executionStats.executed }} Executadas</span>
+          <span class="separator">|</span>
+          <span class="pending"
+            >{{
+              executionStats.total - executionStats.executed
+            }}
+            Pendentes</span
+          >
+        </div>
+      </div>
+      <div class="progress-section">
+        <div class="progress-info">
+          <span class="progress-text">Progresso</span>
+          <span class="progress-percentage"
+            >{{ getProgressPercentage() }}%</span
+          >
+        </div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="getProgressPercentage()"
+          ></div>
+        </div>
+        <div class="toggle-section">
+          <span class="toggle-label">Exibir executadas</span>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              [checked]="!isExecutadasFilterActive"
+              (change)="filtrarNaoExecutadasBtnToggle()"
+            />
+            <span class="slider"></span>
+          </label>
+
+          <span class="toggle-label">Requer Maquina Desligada</span>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              [checked]="isMaquinaDesligadaFilterActive"
+              (change)="filtrarMaquinaDesligadaBtnToggle()"
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+      <div class="filters-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Atividade</mat-label>
+          <mat-select
+            [(ngModel)]="atividadeSelecionada"
+            (selectionChange)="onAtividadeChange($event.value)"
+          >
+            <mat-option
+              *ngFor="let atividade of atividades"
+              [value]="atividade"
+            >
+              {{ atividade }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Setor</mat-label>
+          <mat-select
+            [(ngModel)]="setorSelecionado"
+            (selectionChange)="onSetorChange($event.value)"
+          >
+            <mat-option *ngFor="let setor of setores" [value]="setor.publicId">
+              {{ setor.nome }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <mat-form-field appearance="outline">
+          <mat-label>Equipamento</mat-label>
+          <mat-select
+            [(ngModel)]="equipamentoSelecionado"
+            [disabled]="!setorSelecionado"
+            (selectionChange)="onEquipamentoChange($event.value)"
+          >
+            <mat-option
+              *ngFor="let equipamento of equipamentos"
+              [value]="equipamento.publicId"
+            >
+              {{ equipamento.descricao }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field appearance="outline">
+          <mat-label>Equipamento</mat-label>
+          <input
+            type="text"
+            matInput
+            [matAutocomplete]="autoEquipamento"
+            [formControl]="equipamentoControl"
+            [disabled]="!setorSelecionado"
+          />
+          <mat-autocomplete
+            #autoEquipamento="matAutocomplete"
+            [displayWith]="displayEquipamentoFn"
+            (optionSelected)="onEquipamentoChange($event.option.value)"
+          >
+            <mat-option
+              *ngFor="let equipamento of filteredEquipamentos | async"
+              [value]="equipamento"
+            >
+              {{ equipamento.descricao }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-filter" (click)="openDateRangeModal()">
+          <i class="material-icons">calendar_month</i>
+          Filtrar por data
+        </button>
+        <button class="btn-filter" (click)="scanActive = !scanActive">
+          <i class="material-icons">qr_code_2</i>
+          {{ scanActive ? "Fechar Scanner" : "Filtrar com QR Code" }}
+        </button>
+        <button class="btn-gray" (click)="limparFiltro()">
+          <i class="material-icons">filter_alt_off</i>
+          Limpar Filtros
+        </button>
+        <button
+          class="btn-orange"
+          (click)="tratarListaAtividades()"
+          *ngIf="atividadesSelecionadas.length > 0"
+        >
+          <i class="material-icons">add_task</i>
+          Executar Selecionadas
+        </button>
+      </div>
+
+      <div *ngIf="scanActive" class="scanner-container" id="scanner">
+        <app-qr-code-scanner
+          (scanSuccess)="onScanSuccess($event)"
+        ></app-qr-code-scanner>
+      </div>
+    </div>
+  </div>
+
+  <div class="activities-grid">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div
+      *ngFor="let atividade of getPaginatedData()"
+      class="activity-card"
+      [class.selected]="isAtividadeSelecionada(atividade)"
+      (click)="
+        onSelecionarAtividade({
+          atividade: atividade,
+          selecionado: !isAtividadeSelecionada(atividade)
+        })
+      "
+    >
+      <div class="card-header">
+        <div>
+          <strong>{{ atividade.equipamentoNome }}</strong>
+        </div>
+        <div class="checkbox-container">
+          <input
+            *ngIf="!atividade.executado"
+            type="checkbox"
+            [checked]="isAtividadeSelecionada(atividade)"
+          />
+          <i
+            *ngIf="atividade.executado"
+            aria-label="Executado"
+            class="material-icons"
+            >add_task</i
+          >
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-text-info">
+          <strong>Tag Ponto:</strong> {{ atividade.pontoDeLubrificacaoTag }}
+        </div>
+        <div class="card-text-info">
+          <strong>Atividade:</strong>
+          <span class="actvity-info">{{ " " }}{{ atividade.atividade }}</span>
+        </div>
+        <div class="card-text-info">
+          <strong>Data/Hora:</strong> {{ atividade.dataHoraParaExecucao }}
+        </div>
+        <div class="card-text-info" *ngIf="atividade.atividade !== 'LIMPEZA'">
+          <strong>Produto:</strong> {{ atividade.produto }}
+        </div>
+        <div class="card-text-info">
+          <strong>Descrição:</strong> {{ atividade.descComponentePtLub }}
+        </div>
+        <div
+          class="card-text-info"
+          *ngIf="
+            atividade.atividade !== 'LIMPEZA' &&
+            atividade.quantidade.trim() !== ''
+          "
+        >
+          <strong>Quantidade:</strong> {{ atividade.quantidade }}
+        </div>
+        <div class="card-text-info">
+          <strong>Maquina Desligada:</strong>
+          {{ atividade.atividadeRequerMaquinaDesligada ? "SIM" : "NÃO" }}
+        </div>
+        <div class="card-text-info" *ngIf="atividade.modoAplicacao !== ''">
+          <strong>Observação:</strong> {{ atividade.modoAplicacao }}
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          *ngIf="!atividade.executado"
+          class="btn-execute"
+          (click)="onExecutarAtividade(atividade); $event.stopPropagation()"
+          [disabled]="atividade.executado"
+        >
+          Executar
+        </button>
+        <strong>{{ atividade.executado ? "Concluída" : "" }}</strong>
+      </div>
+    </div>
+
+    <div
+      class="empty-state"
+      *ngIf="getPaginatedData().length === 0 && !isLoading"
+    >
+      <i class="material-icons">assignment</i>
+      <p>Nenhuma atividade encontrada</p>
+    </div>
+  </div>
+
+  <div class="pagination-container" *ngIf="getTotalPages() > 1">
+    <div class="pagination-info">
+      <span>Itens por página</span>
+      <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+        <option *ngFor="let option of itemsPerPageOptions" [value]="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        class="pagination-btn"
+        (click)="changePage(1)"
+        [disabled]="currentPage === 1"
+      >
+        <i class="material-icons">first_page</i>
+      </button>
+
+      <button
+        class="pagination-btn"
+        (click)="changePage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        <i class="material-icons">chevron_left</i>
+      </button>
+
+      <button
+        *ngFor="let page of getPageNumbers()"
+        class="pagination-number"
+        [class.active]="page === currentPage"
+        (click)="changePage(page)"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        class="pagination-btn"
+        (click)="changePage(currentPage + 1)"
+        [disabled]="currentPage === getTotalPages()"
+      >
+        <i class="material-icons">chevron_right</i>
+      </button>
+
+      <button
+        class="pagination-btn"
+        (click)="changePage(getTotalPages())"
+        [disabled]="currentPage === getTotalPages()"
+      >
+        <i class="material-icons">last_page</i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="modalAberta">
+  <div class="modal-content">
+    <h2>
+      {{
+        habilitarExecutar ? "Informe as observações" : "Incluir Observações?"
+      }}
+    </h2>
+    <div class="detalhe-atividade">
+      <p>Atividade: {{ listaObjeto[indiceAtual].atividade }}</p>
+      <p>
+        Ponto de Manutenção:
+        {{ listaObjeto[indiceAtual].pontoDeLubrificacaoTag }}
+      </p>
+      <p>
+        Data para execução: {{ listaObjeto[indiceAtual].dataHoraParaExecucao }}
+      </p>
+      <div *ngIf="habilitarExecutar">
+        <input
+          [(ngModel)]="
+            observacoes[
+              getChaveUnica(
+                listaObjeto[indiceAtual].publicId,
+                listaObjeto[indiceAtual].dataHoraParaExecucao
+              )
+            ]
+          "
+          matInput
+          type="text"
+          class="no-underline"
+          placeholder="Digite a observação"
+        />
+      </div>
+      <p class="progress-text" *ngIf="listaObjeto.length > 1">
+        Atividade {{ indiceAtual + 1 }} de {{ listaObjeto.length }}
+      </p>
+    </div>
+    <div class="modal-buttons">
+      <button
+        *ngIf="habilitarExecutar"
+        mat-raised-button
+        color="primary"
+        (click)="proximoPasso()"
+      >
+        <mat-icon>{{
+          indiceAtual < listaObjeto.length - 1 ? "arrow_forward" : "check"
+        }}</mat-icon>
+        {{ indiceAtual < listaObjeto.length - 1 ? "Próxima" : "Finalizar" }}
+      </button>
+      <button
+        *ngIf="!habilitarExecutar"
+        class="btn-primary"
+        (click)="informarObservacoes()"
+      >
+        Sim
+      </button>
+      <button
+        *ngIf="!habilitarExecutar"
+        class="btn-nao-utilizado"
+        (click)="proximoPasso()"
+      >
+        Não
+      </button>
+      <button class="btn-voltar" (click)="closeModalAndReset()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="modalQuantidadeLub">
+  <div class="modal-content">
+    <h2>Quantidade de Produto Utilizada</h2>
+    <div class="detalhe-atividade">
+      <p>Atividade: {{ listaObjeto[indiceAtual].atividade }}</p>
+      <p>
+        Ponto de Manutenção:
+        {{ listaObjeto[indiceAtual].pontoDeLubrificacaoTag }}
+      </p>
+      <p>
+        Data para execução: {{ listaObjeto[indiceAtual].dataHoraParaExecucao }}
+      </p>
+      <p>Produto: {{ listaObjeto[indiceAtual].produto }}</p>
+      <div class="quantidade-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Quantidade de produto</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="quantidadeLubrificante"
+            min="0.001"
+            step="0.001"
+          />
+        </mat-form-field>
+        <mat-radio-group
+          class="unidade-medida-group"
+          [(ngModel)]="unidadeMedidaSelecionada"
+          (change)="onUnidadeMedidaChange($event.value)"
+        >
+          <mat-radio-button
+            *ngFor="let unidade of unidadeMedidaOptions"
+            [value]="unidade"
+          >
+            {{ unidade }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-primary" (click)="confirmarQuantidade()">
+        <mat-icon>check</mat-icon>
+        Confirmar
+      </button>
+      <button class="btn-nao-utilizado" (click)="marcarComoNaoUtilizado()">
+        <mat-icon>block</mat-icon>
+        Não utilizado
+      </button>
+      <button
+        class="btn-voltar"
+        (click)="modalQuantidadeLub = false; modalAberta = true"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        Voltar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="modal_confirma_codigo">
+  <div class="modal-content">
+    <h2>Escanear ou digitar código?</h2>
+    <mat-form-field *ngIf="informar_manual" class="full-width">
+      <input
+        [(ngModel)]="codigo"
+        matInput
+        placeholder="Informe o código"
+        type="text"
+        class="no-underline"
+      />
+    </mat-form-field>
+    <div class="modal-buttons">
+      <button
+        *ngIf="!informar_manual"
+        class="btn-primary"
+        (click)="confirmarComScanner()"
+      >
+        <mat-icon>qr_code_scanner</mat-icon>
+        Escanear
+      </button>
+      <button
+        *ngIf="!informar_manual"
+        class="btn-nao-utilizado"
+        (click)="confirmarComInput(false)"
+      >
+        <mat-icon>edit</mat-icon>
+        Digitar
+      </button>
+      <button
+        *ngIf="informar_manual"
+        class="btn-primary"
+        (click)="confirmarComInput(true)"
+      >
+        Confirmar
+      </button>
+      <button class="btn-voltar" (click)="modal_confirma_codigo = false">
+        Voltar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="hidden-pdf-container" *ngIf="showPdfGenerator">
+  <app-pdf-generator
+    [titulo]="
+      'Lista de Atividades' +
+      (startDate && endDate
+        ? ' (' +
+          (startDate | date : 'dd/MM/yyyy') +
+          ' a ' +
+          (endDate | date : 'dd/MM/yyyy') +
+          ')'
+        : isSemanal
+        ? ' da Semana'
+        : periodo !== 'CALENDAR'
+        ? ' do Dia'
+        : '')
+    "
+    [cabecalho]="pdfHeaders"
+    [dados]="pdfData"
+    [download]="true"
+  >
+  </app-pdf-generator>
+</div>

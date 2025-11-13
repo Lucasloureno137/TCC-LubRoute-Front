@@ -1,0 +1,31 @@
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  mat-dialog-content {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  
+  mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  
+  button {
+    font-size: 14px;
+  }
+  
+  .info {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+    color: #1976d2; /* Blue color for info */
+  }
+  
+  .info mat-icon {
+    padding-right: 15px;
+  }

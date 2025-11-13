@@ -1,0 +1,26 @@
+<mat-dialog-content>
+  <h2>Selecione o período</h2>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Intervalo de datas</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate placeholder="Data inicial" [(ngModel)]="startDate" />
+      <input matEndDate placeholder="Data final" [(ngModel)]="endDate" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+
+  <div class="modal-actions">
+    <button
+      class="btn-primary"
+      (click)="confirm()"
+      [disabled]="!isDateRangeValid()"
+    >
+      Confirmar
+    </button>
+    <button class="btn-voltar" (click)="closeModal()">
+      <i class="material-icons">arrow_back</i>Voltar
+    </button>
+  </div>
+</mat-dialog-content>

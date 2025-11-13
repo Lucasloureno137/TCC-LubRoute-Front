@@ -1,0 +1,184 @@
+<div class="pontos-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Pontos de Manutenção</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button class="btn-primary" (click)="onAddPonto()">
+      <i class="material-icons">add</i>
+      Cadastrar Ponto
+    </button>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Setor</mat-label>
+          <mat-select
+            [(ngModel)]="setorSelecionado"
+            (selectionChange)="onSetorChange($event.value)"
+          >
+            <mat-option *ngFor="let setor of setores" [value]="setor.publicId">
+              {{ setor.nome }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Equipamento</mat-label>
+          <input
+            type="text"
+            matInput
+            [formControl]="equipamentoControl"
+            [matAutocomplete]="autoEquipamento"
+          />
+          <mat-autocomplete
+            #autoEquipamento="matAutocomplete"
+            [displayWith]="displayEquipamentoFn"
+            (optionSelected)="onEquipChange($event.option.value)"
+          >
+            <mat-option
+              *ngFor="let option of filteredEquipamentos | async"
+              [value]="option"
+            >
+              {{ option.descricao }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Digite algo..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            class="search-input"
+          />
+          <button class="search-btn" (click)="onSearch()">
+            <i class="material-icons">search</i>
+          </button>
+        </div>
+        <button class="btn-gray" (click)="limparFiltro()">
+          <i class="material-icons">filter_alt_off</i>
+          Limpar Filtros
+        </button>
+      </div>
+      <div class="action-buttons">
+        <button class="btn-blue" (click)="onAddManutencao()">
+          <i class="material-icons">add</i>
+          Adicionar Operação
+        </button>
+        <button class="btn-blue" (click)="onViewQRCode()">
+          <i class="material-icons">qr_code</i>
+          Ver QR Code
+        </button>
+        <button class="btn-secondary" (click)="onEditPonto()">
+          <i class="material-icons">edit</i>
+          Editar
+        </button>
+        <button class="btn-danger" (click)="onDeletePonto()">
+          <i class="material-icons">delete</i>
+          Excluir
+        </button>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-container">
+        <table class="pontos-table">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>EQUIPAMENTO</th>
+              <th>TAG PONTO</th>
+              <th>TIPO</th>
+              <th>PRODUTO</th>
+              <th>DESC. COMPONENTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let ponto of getPaginatedPontos()"
+              (click)="onRowClick(ponto)"
+              [class.selected]="isSelected(ponto)"
+              class="table-row"
+            >
+              <td>{{ ponto.id }}</td>
+              <td class="ponto-equipamento">{{ ponto.equipamento }}</td>
+              <td class="ponto-tag">{{ ponto.tag }}</td>
+              <td class="ponto-tipo">{{ ponto.tipoLubrificante }}</td>
+              <td class="ponto-lubrificante">{{ ponto.lubrificante }}</td>
+              <td class="ponto-descricao">{{ ponto.descricaoComponente }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="getPaginatedPontos().length === 0">
+          <i class="material-icons">oil_barrel</i>
+          <p>Nenhum ponto de manutenção encontrado</p>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select
+            [(ngModel)]="itemsPerPage"
+            (change)="updatePagination(); currentPage = 1"
+          >
+            <option value="5">5</option>
+            <option value="9">9</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">first_page</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">chevron_right</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

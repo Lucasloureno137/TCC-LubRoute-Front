@@ -1,0 +1,134 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)" class="login-form">
+  <ng-container *ngIf="modoNaoSelecionado; else form">
+    <mat-card>
+      <h1 class="page-title">Selecione o modo de acesso</h1>
+      <button class="btn-modo btn-action" (click)="redirecionaAdmin()">
+        Administrador
+      </button>
+      <button class="btn-modo btn-action" (click)="redirecionaCliente()">
+        Gerente/Técnico
+      </button>
+    </mat-card>
+  </ng-container>
+  <ng-template #form>
+    <mat-card>
+      <div *ngIf="erroEncontrado" class="error">
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="requestAdmin" class="admin-access">
+        <h1 class="page-title">Módulo Administrador</h1>
+        <p>
+          Para acesso cliente: <a (click)="redirecionaCliente()">clique aqui</a>
+        </p>
+      </div>
+      <div *ngIf="!requestAdmin" class="admin-access">
+        <h1 class="page-title">Módulo Cliente</h1>
+        <p>
+          Para acesso admin: <a (click)="redirecionaAdmin()">clique aqui</a>
+        </p>
+      </div>
+      <div *ngIf="primeiroAcesso" class="newPassword">
+        Este é seu primeiro acesso, por favor, cadastre uma nova senha.
+      </div>
+
+      <!-- Exibe apenas o input de email se esqueceuSenha for verdadeiro -->
+      <div *ngIf="!esqueceuSenha">
+        <mat-form-field class="no-underline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" required />
+        </mat-form-field>
+
+        <!-- Campo de senha com funcionalidade de exibir/ocultar -->
+        <mat-form-field class="no-underline">
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility()"
+            type="button"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Campos de nova senha para o primeiro acesso -->
+        <mat-form-field class="no-underline" *ngIf="primeiroAcesso">
+          <mat-label>Nova Senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="novaSenha"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility()"
+            type="button"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field class="no-underline" *ngIf="primeiroAcesso">
+          <mat-label>Confirme a Nova Senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="confirmaNovaSenha"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility()"
+            type="button"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <button
+          type="button"
+          *ngIf="primeiroAcesso"
+          class="btn-action"
+          (click)="alterarSenha()"
+        >
+          Cadastrar Nova Senha
+        </button>
+        <button *ngIf="!primeiroAcesso" class="btn-action" type="button" (click)="onSubmit($event)">
+          Enviar
+        </button>
+      </div>
+
+      <!-- Campo de email visível ao clicar em "Esqueci minha senha" -->
+      <div *ngIf="esqueceuSenha">
+        <mat-form-field class="no-underline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" required />
+        </mat-form-field>
+        <button class="btn-action" (click)="recuperarSenha()">
+          Recuperar Senha
+        </button>
+      </div>
+
+      <span
+        class="forgot-pass"
+        (click)="mostrarEsqueciSenha()"
+        >{{ esqueceuSenha ? "Voltar" : "Esqueci minha senha" }}</span
+      >
+    </mat-card>
+  </ng-template>
+</form>

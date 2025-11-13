@@ -1,0 +1,76 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{ isUpdate ? "Editar Equipamento" : "Novo Equipamento" }}
+      </h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Informações do Equipamento</h3>
+      
+      <form class="form-grid" (ngSubmit)="onSubmit()">
+        <mat-form-field  class="form-field">
+          <mat-label>Descrição</mat-label>
+          <input matInput 
+                 [(ngModel)]="descricao" 
+                 name="descricao"
+                 placeholder="Digite a descrição do equipamento"
+                 [disabled]="isLoading"
+                 required>
+        </mat-form-field>
+
+        <mat-form-field  class="form-field">
+          <mat-label>TAG</mat-label>
+          <input matInput 
+                 [(ngModel)]="tag" 
+                 name="tag"
+                 placeholder="Digite a TAG do equipamento"
+                 [disabled]="isLoading"
+                 required>
+        </mat-form-field>
+
+        <mat-form-field  class="form-field">
+          <mat-label>Setor</mat-label>
+          <mat-select [(ngModel)]="setorSelecionado"
+                     (selectionChange)="onSetorChange($event.value)"
+                     [disabled]="isUpdate || isLoading"
+                     name="setor"
+                     required>
+            <mat-option *ngFor="let setor of setores" [value]="setor.publicId">
+              {{ setor.nome }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="isUpdate">O setor não pode ser alterado durante a edição</mat-hint>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" 
+              class="btn-primary" 
+              [disabled]="!isFormValid() || isLoading"
+              (click)="onSubmit()">
+        <i class="material-icons" *ngIf="isLoading">hourglass_empty</i>
+        <i class="material-icons" *ngIf="!isLoading">{{ isUpdate ? "edit" : "save" }}</i>
+        <span *ngIf="!isLoading">{{ isUpdate ? "Atualizar Equipamento" : "Cadastrar Equipamento" }}</span>
+        <span *ngIf="isLoading">{{ isUpdate ? "Atualizando..." : "Cadastrando..." }}</span>
+      </button>
+      
+      <app-voltar></app-voltar>
+    </div>
+
+    <div class="loading-overlay" *ngIf="isLoading && setores.length === 0">
+      <div class="loading-spinner">
+        <i class="material-icons spinning">refresh</i>
+        <p>Carregando setores...</p>
+      </div>
+    </div>
+  </div>
+</div>

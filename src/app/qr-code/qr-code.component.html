@@ -1,0 +1,22 @@
+<!-- src/app/qr-code/qr-code.component.html -->
+<div class="qr-code-container">
+    <div class="descricao">
+        <h1>Código QR para {{dominio == 'equipamento' ? 'equipamento: ': 'ponto de manutenção: '}} {{descricao}}</h1>
+    </div>
+    <div class="qr-code-display">
+      <qrcode
+        [width]="300"
+        [qrdata]="qrData"
+        [elementType]="qrCodeElementType"
+        [imageHeight]="75"
+        [imageWidth]="75"
+        ></qrcode>
+    </div>
+    <div class="qr-code-text">
+      <p>Lubvel</p>
+      <p>{{tag}}</p>
+    </div>
+    <button (click)="onDownloadQRCode()" class="download-button">Download QR Code</button>
+    <br><br>
+    <app-voltar></app-voltar>
+  </div>

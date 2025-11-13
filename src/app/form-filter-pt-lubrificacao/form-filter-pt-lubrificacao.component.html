@@ -1,0 +1,135 @@
+<div *ngIf="pronunciou" class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Selecionar Ponto Lubrificação</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Filtros de Seleção</h3>
+
+      <form class="form-grid">
+        <mat-form-field class="form-field">
+          <mat-label>Setor</mat-label>
+          <mat-select
+            [(ngModel)]="setorSelecionado"
+            (selectionChange)="onSelect($event.value, 'SETOR')"
+            [disabled]="setores.length === 0 || isLoading"
+            name="setor"
+            required
+          >
+            <mat-option *ngFor="let setor of setores" [value]="setor.publicId">
+              {{ setor.nome }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="setores.length === 0"
+            >Não foi encontrado nenhum setor</mat-hint
+          >
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Equipamento</mat-label>
+          <input
+            type="text"
+            matInput
+            [formControl]="equipamentoControl"
+            [matAutocomplete]="autoEquipamento"
+            [disabled]="
+              equipamentos.length === 0 || setores.length === 0 || isLoading
+            "
+            (focus)="carregarTodasOpcoesEquipamento()"
+            placeholder="Digite para buscar equipamento"
+          />
+          <mat-autocomplete
+            #autoEquipamento="matAutocomplete"
+            [displayWith]="displayEquipamentoFn"
+            (optionSelected)="onSelect($event.option.value, 'EQP')"
+          >
+            <mat-option
+              *ngFor="let option of filteredEquipamentos | async"
+              [value]="option"
+            >
+              {{ option.descricao }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-hint *ngIf="setorSelecionado == ''">Selecione um setor</mat-hint>
+          <mat-hint
+            *ngIf="
+              setorSelecionado != '' &&
+              setores.length > 0 &&
+              equipamentos.length === 0
+            "
+          >
+            Não foi encontrado nenhum equipamento para este setor
+          </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Ponto de Manutenção</mat-label>
+          <mat-select
+            [(ngModel)]="ptLubrificacaoSelecionado"
+            (selectionChange)="onSelect($event.value, 'PT_LUB')"
+            [disabled]="
+              pontosLubrificacao.length === 0 ||
+              equipamentos.length === 0 ||
+              setores.length === 0 ||
+              isLoading
+            "
+            name="pontoLubrificacao"
+            required
+          >
+            <mat-option
+              *ngFor="let ptLub of pontosLubrificacao"
+              [value]="ptLub.publicId"
+            >
+              Desc Comp: {{ ptLub.descricaoComponente }} | TAG: {{ ptLub.tag }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="equipamentos.length === 0">
+            Selecione um equipamento para visualizar os pontos de manutenção
+          </mat-hint>
+          <mat-hint
+            *ngIf="
+              equipamentoSelecionado != '' &&
+              equipamentos.length > 0 &&
+              pontosLubrificacao.length === 0
+            "
+          >
+            Não foi encontrado nenhum ponto de manutenção para o equipamento
+            informado
+          </mat-hint>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="btn-primary"
+        (click)="enviarFormulario()"
+        [disabled]="!consultaHabilitada || isLoading"
+      >
+        <i class="material-icons" *ngIf="isLoading">hourglass_empty</i>
+        <i class="material-icons" *ngIf="!isLoading">arrow_forward</i>
+        <span *ngIf="!isLoading">Selecionar e seguir</span>
+        <span *ngIf="isLoading">Processando...</span>
+      </button>
+
+      <button class="btn-secondary" (click)="backPage()" [disabled]="isLoading">
+        <i class="material-icons">arrow_back</i>
+        <span>Voltar</span>
+      </button>
+    </div>
+
+    <div class="loading-overlay" *ngIf="isLoading && setores.length === 0">
+      <div class="loading-spinner">
+        <i class="material-icons spinning">refresh</i>
+        <p>Carregando dados...</p>
+      </div>
+    </div>
+  </div>
+</div>

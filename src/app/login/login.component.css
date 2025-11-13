@@ -1,0 +1,93 @@
+
+mat-card {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 10rem;
+    margin-bottom: 10rem;
+    padding: 24px;
+}
+
+.login-form {
+    /* width: 400px; */
+    margin: 0 auto;
+    margin-bottom: 10rem;
+    margin-top: 5rem;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.error {
+    color: red;
+    margin-bottom: 15px;
+}
+
+.newPassword {
+    color: green;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.admin-access h1 {
+  color: #000;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.admin-access p {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.admin-access a {
+  color: #000;
+  text-decoration: none;
+  font-style: italic;
+}
+
+.admin-access a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-modo{
+  margin-top: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.btn-action {
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  width: 100%;
+}
+
+.btn-action:hover {
+  background-color: #e55a2b;
+}
+
+.forgot-pass {
+  cursor: pointer;
+  margin-top: 24px;
+}

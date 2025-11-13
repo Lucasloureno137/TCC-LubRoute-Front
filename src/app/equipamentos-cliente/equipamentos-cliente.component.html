@@ -1,0 +1,166 @@
+<div class="equipamentos-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Equipamentos Cadastrados</h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button class="btn-primary" (click)="onAddEquipamento()">
+      <i class="material-icons">add</i>
+      Adicionar Equipamento
+    </button>
+  </div>
+
+  <div class="content-card">
+    <div class="filters-section">
+      <h3 class="filters-title">Filtros</h3>
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Setor</mat-label>
+          <mat-select
+            [(ngModel)]="setorSelecionado"
+            (selectionChange)="onSetorChange($event.value)"
+          >
+            <mat-option *ngFor="let setor of setores" [value]="setor.publicId">
+              {{ setor.nome }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Digite algo..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            class="search-input"
+          />
+          <button class="search-btn" (click)="onSearch()">
+            <i class="material-icons">search</i>
+          </button>
+        </div>
+        <button class="btn-gray" (click)="limparFiltro()">
+          <i class="material-icons">filter_alt_off</i>
+          Limpar Filtros
+        </button>
+      </div>
+      <div class="action-buttons">
+        <button class="btn-blue" (click)="onAddPontoLubrificacao()">
+          <i class="material-icons">place</i>
+          Adicionar ponto de Manutenção
+        </button>
+        <button class="btn-blue" (click)="onViewPontosLubrificacao()">
+          <i class="material-icons">visibility</i>
+          Ver pontos de Manutenção
+        </button>
+        <button class="btn-blue" (click)="onViewQRCode()">
+          <i class="material-icons">qr_code</i>
+          Ver QR Code
+        </button>
+        <button class="btn-secondary" (click)="onEditEquipamento()">
+          <i class="material-icons">edit</i>
+          Editar
+        </button>
+        <button class="btn-danger" (click)="onDeleteEquipamento()">
+          <i class="material-icons">delete</i>
+          Excluir
+        </button>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-container">
+        <table class="equipamentos-table">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>TAG EQUIP.</th>
+              <th>EQUIPAMENTO</th>
+              <th>SETOR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let equipamento of getPaginatedEquipamentos()"
+              (click)="onRowClick(equipamento)"
+              [class.selected]="isSelected(equipamento)"
+              class="table-row"
+            >
+              <td>{{ equipamento.id }}</td>
+              <td class="equip-tag">{{ equipamento.tag }}</td>
+              <td class="equip-descricao">{{ equipamento.descricao }}</td>
+              <td class="equip-setor">{{ equipamento.setor }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div
+          class="empty-state"
+          *ngIf="getPaginatedEquipamentos().length === 0"
+        >
+          <i class="material-icons">precision_manufacturing</i>
+          <p>Nenhum equipamento encontrado</p>
+        </div>
+      </div>
+
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Itens por página</span>
+          <select
+            [(ngModel)]="itemsPerPage"
+            (change)="updatePagination(); currentPage = 1"
+          >
+            <option value="5">5</option>
+            <option value="9">9</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">first_page</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <i class="material-icons">chevron_left</i>
+          </button>
+
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">chevron_right</i>
+          </button>
+
+          <button
+            class="pagination-btn"
+            (click)="onPageChange(totalPages)"
+            [disabled]="currentPage === totalPages"
+          >
+            <i class="material-icons">last_page</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

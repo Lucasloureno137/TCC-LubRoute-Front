@@ -1,0 +1,77 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        <ng-container *ngIf="isUpdate; else cadastrar">
+          Atualizar Ponto de Manutenção
+        </ng-container>
+        <ng-template #cadastrar>
+          Cadastrar Ponto de Manutenção
+        </ng-template>
+      </h1>
+      <app-breadcrumb [items]="breadcrumbItems" [showContainer]="false"></app-breadcrumb>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="form-section">
+      <h3 class="form-title">Informações do Ponto de Manutenção</h3>
+      
+      <form class="form-grid">
+        <mat-form-field class="form-field">
+          <mat-label>Equipamento</mat-label>
+          <input type="text" 
+                 matInput 
+                 [formControl]="equipamentoControl" 
+                 [matAutocomplete]="autoEquipamento" 
+                 [disabled]="isUpdate" 
+                 (focus)="carregarTodasOpcoesEquipamento()">
+          <mat-autocomplete #autoEquipamento="matAutocomplete" 
+                           [displayWith]="displayEquipamentoFn" 
+                           (optionSelected)="onEquipamentoChange($event.option.value)">
+            <mat-option *ngFor="let option of filteredEquipamentos | async" [value]="option">
+              {{option.descricao}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Tag</mat-label>
+          <input matInput [(ngModel)]="tag" name="tag">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Descrição do Componente</mat-label>
+          <input matInput [(ngModel)]="descricaoComponente" name="descricaoComponente">
+        </mat-form-field>
+
+        <mat-form-field class="form-field">
+          <mat-label>Produto</mat-label>
+          <input type="text" 
+                 matInput 
+                 [formControl]="myControl" 
+                 [matAutocomplete]="auto" 
+                 (focus)="carregarTodasOpcoes()">
+          <mat-autocomplete #auto="matAutocomplete" 
+                           [displayWith]="displayFn" 
+                           (optionSelected)="onProdutoChange($event.option.value)">
+            <mat-option *ngFor="let option of filteredProdutos | async" [value]="option">
+              {{option.nome}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" (click)="enviarFormulario()">
+        <i class="material-icons">save</i>
+        {{'Salvar'}}
+      </button>
+      <button class="btn-secondary" (click)="backPage()">
+        <i class="material-icons">arrow_back</i>
+        Voltar
+      </button>
+    </div>
+  </div>
+</div>

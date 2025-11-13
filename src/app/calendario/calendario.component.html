@@ -1,0 +1,155 @@
+<div class="calendario-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">Calendário de Eventos</h1>
+      <app-breadcrumb [items]="breadcrumbItems" [showContainer]="false"></app-breadcrumb>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="onRefresh()" [disabled]="isLoading">
+        <i class="material-icons" [class.spinning]="isLoading">refresh</i>
+        Atualizar
+      </button>
+    </div>
+  </div>
+
+  <div class="calendar-wrapper">
+    <div class="calendar-content">
+      <div class="content-card">
+        <div class="calendar-loading" *ngIf="isLoading">
+          <div class="loading-spinner">
+            <i class="material-icons spinning">refresh</i>
+            <p>Carregando eventos...</p>
+          </div>
+        </div>
+
+        <div class="calendar-container" *ngIf="!isLoading">
+          <full-calendar 
+            #calendar
+            [options]="calendarOptions">
+          </full-calendar>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-details-sidebar" *ngIf="selectedEvent">
+      <div class="content-card">
+        <div class="sidebar-header">
+          <h3>Detalhes do Evento</h3>
+          <button class="close-btn" (click)="closeEventDetails()">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        
+        <div class="event-info">
+          <div class="event-title">
+            <h4>{{ selectedEvent!.title }}</h4>
+            <span 
+              class="event-type-badge" 
+              [style.backgroundColor]="selectedEvent!.backgroundColor">
+              {{ getEventTypeLabel(selectedEvent!.extendedProps?.['tipo'] || '') }}
+            </span>
+          </div>
+
+          <div class="event-details">
+            <div class="detail-item" *ngIf="selectedEvent.start">
+              <div class="detail-label">
+                <i class="material-icons">schedule</i>
+                Data/Hora Início
+              </div>
+              <div class="detail-value">
+                {{ formatDateTime(selectedEvent!.start) }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="selectedEvent.end">
+              <div class="detail-label">
+                <i class="material-icons">schedule</i>
+                Data/Hora Fim
+              </div>
+              <div class="detail-value">
+                {{ formatDateTime(selectedEvent!.end) }}
+              </div>
+            </div>
+
+             <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'equipamento')">
+              <div class="detail-label">
+                <i class="material-icons">precision_manufacturing</i>
+                Equipamento
+              </div>
+              <div class="detail-value">
+                {{ getEventProperty(selectedEvent, 'equipamento') }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'produto')">
+              <div class="detail-label">
+                <i class="material-icons">science</i>
+                Produto
+              </div>
+              <div class="detail-value">
+                {{ getEventProperty(selectedEvent, 'produto') }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'tecnico')">
+              <div class="detail-label">
+                <i class="material-icons">person</i>
+                Responsável
+              </div>
+              <div class="detail-value">
+                {{ getEventProperty(selectedEvent, 'tecnico') }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'setor')">
+              <div class="detail-label">
+                <i class="material-icons">place</i>
+                Setor
+              </div>
+              <div class="detail-value">
+                {{ getEventProperty(selectedEvent, 'setor') }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'modoAplicacao')">
+              <div class="detail-label">
+                <i class="material-icons">description</i>
+                Descrição
+              </div>
+              <div class="detail-value description">
+                {{ getEventProperty(selectedEvent, 'modoAplicacao') }}
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="getEventProperty(selectedEvent, 'executado')">
+              <div class="detail-label">
+                <i class="material-icons">check_circle</i>
+                Executado
+              </div>
+              <div class="detail-value description">
+                {{ getEventProperty(selectedEvent, 'executado') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend-section">
+    <div class="content-card">
+      <h4>Legenda de Eventos</h4>
+      <div class="legend-items">
+        <div 
+          *ngFor="let type of eventTypes" 
+          class="legend-item">
+          <span 
+            class="legend-color" 
+            [style.backgroundColor]="type.color">
+          </span>
+          <span class="legend-label">{{ type.label }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

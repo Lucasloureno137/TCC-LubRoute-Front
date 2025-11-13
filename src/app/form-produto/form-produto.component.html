@@ -1,0 +1,372 @@
+<div class="form-container">
+  <div class="page-header">
+    <div class="title-section">
+      <h1 class="page-title">
+        {{ isEditMode ? "Editar Produto" : "Cadastrar Produto" }}
+      </h1>
+      <app-breadcrumb
+        [items]="breadcrumbItems"
+        [showContainer]="false"
+      ></app-breadcrumb>
+    </div>
+    <button class="btn-secondary" (click)="voltarParaListagem()">
+      <i class="material-icons">arrow_back</i>
+      Voltar para Listagem
+    </button>
+  </div>
+
+  <div class="content-card">
+    <div
+      class="alert-section"
+      *ngIf="currentStep === 'produtoBase' && produtoBase.produtos.length > 0"
+    >
+      <div class="alert-card">
+        <i class="material-icons">warning</i>
+        <div class="alert-content">
+          <p>
+            Subprodutos já foram adicionados ao produto em cadastro. O
+            formulário está no modo de consulta.
+          </p>
+          <p>
+            Para alterar o produto base ou o tipo de lubrificante, remova todos
+            os subprodutos da lista.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-section">
+      <div class="steps-container">
+        <div
+          *ngFor="let step of stepItems; let isLast = last"
+          class="step-item"
+          [class.active]="step.active"
+          [class.disabled]="step.disabled"
+          (click)="alterarEtapa(step.step)"
+        >
+          <span class="step-label">{{ step.label }}</span>
+          <i class="material-icons step-arrow" *ngIf="!isLast">chevron_right</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <!-- Produto Base -->
+      <div *ngIf="currentStep === 'produtoBase'" class="step-content">
+        <h3 class="section-title">
+          {{ produtoEdicao ? "Editar Produto Base" : "Produto Base" }}
+        </h3>
+
+        <div class="form-grid">
+          <mat-form-field>
+            <mat-label>Nome</mat-label>
+            <input
+              matInput
+              [(ngModel)]="produtoBase.nome"
+              maxlength="30"
+              (ngModelChange)="formatarParaMaiusculo($event, 'nome')"
+              (input)="atualizarLimiteSubproduto()"
+              [disabled]="produtoBase.produtos.length > 0"
+            />
+            <mat-hint align="end"
+              >{{ produtoBase.nome.length || 0 }}/30</mat-hint
+            >
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Tipo Produto</mat-label>
+            <mat-select
+              [(ngModel)]="produtoBase.tipoLubrificante"
+              (ngModelChange)="defineUnidadesMedida()"
+              [disabled]="produtoBase.produtos.length > 0"
+            >
+              <mat-option value="GRAXA">GRAXA</mat-option>
+              <mat-option value="LIQUIDO">LÍQUIDO</mat-option>
+              <mat-option value="PECA">PEÇA</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="nextStep()">
+            <i class="material-icons">arrow_forward</i>
+            Próximo
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub Produtos -->
+      <div *ngIf="currentStep === 'subProdutos'" class="step-content">
+        <h3 class="section-title">Sub Produtos</h3>
+        <p class="section-description">
+          Inclua os produtos que compõem o produto base. Você pode adicionar
+          quantos produtos desejar.
+          <span class="highlight"
+            >Nome do produto base é inserido automaticamente como prefixo.</span
+          >
+        </p>
+
+        <div class="subproduct-form">
+          <div class="form-grid">
+            <!-- Nome do Subproduto -->
+            <mat-form-field
+              floatLabel="always"
+              class="full-width no-wrap-prefix"
+            >
+              <mat-label>Subproduto Nome</mat-label>
+              <span matTextPrefix>{{ produtoBase.nome }} - </span>
+              <input
+                matInput
+                [(ngModel)]="subProduto.nome"
+                [maxlength]="limiteSubproduto"
+                (ngModelChange)="formatarParaMaiusculo($event, 'subproduto')"
+              />
+              <mat-hint align="end"
+                >{{ subProduto.nome.length || 0 }}/{{
+                  limiteSubproduto
+                }}</mat-hint
+              >
+            </mat-form-field>
+
+            <!-- Quantidade -->
+            <mat-form-field class="half-width">
+              <mat-label>Quantidade</mat-label>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="subProduto.qtd"
+                (click)="limparCampo($event)"
+              />
+            </mat-form-field>
+          </div>
+
+          <!-- Código (aparece somente quando ativo) -->
+          <mat-form-field *ngIf="false" class="half-width">
+            <mat-label>Código</mat-label>
+            <input
+              matInput
+              [(ngModel)]="subProduto.codigo"
+              (input)="validateCodigoLength($event)"
+              maxlength="10"
+              pattern="[0-9]*"
+              placeholder="Apenas números"
+            />
+            <mat-hint align="end"
+              >{{ subProduto.codigo.length || 0 }}/10</mat-hint
+            >
+          </mat-form-field>
+
+          <!-- Slide Toggle -->
+          <div class="toggle-wrapper" *ngIf="false">
+            <mat-slide-toggle
+              [(ngModel)]="isCodigoAtivo"
+              (ngModelChange)="onToggleChange($event)"
+              matTooltip="Utilize para informar o código da nota fiscal"
+            >
+              Informar código
+            </mat-slide-toggle>
+          </div>
+
+          <!-- Unidades de medida -->
+          <div class="unidades-medida">
+            <label class="section-label">Unidade de Medida</label>
+            <mat-radio-group [(ngModel)]="subProduto.unidade">
+              <mat-radio-button
+                *ngFor="let unidade of unidadeMedida"
+                [value]="unidade"
+              >
+                {{ unidade }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-primary" (click)="adicionarSubProduto()">
+              <i class="material-icons">add</i>
+              Inserir Subproduto
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="products-table-section"
+          *ngIf="produtoBase.produtos.length > 0"
+        >
+          <h4 class="table-title">Subprodutos Adicionados</h4>
+          <div class="table-container">
+            <table class="products-table">
+              <thead>
+                <tr>
+                  <th>NOME</th>
+                  <th>QUANTIDADE</th>
+                  <th>CÓDIGO</th>
+                  <th>AÇÕES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let produto of produtoBase.produtos"
+                  class="table-row"
+                >
+                  <td class="product-name">{{ produto.nome }}</td>
+                  <td>
+                    <div *ngIf="produtoEmEdicao !== produto">
+                      {{ produto.qtdFormat }}
+                    </div>
+                    <div *ngIf="produtoEmEdicao === produto" class="edit-field">
+                      <input
+                        type="number"
+                        class="edit-input"
+                        [(ngModel)]="produto.qtd"
+                        (click)="limparCampoEdicao($event)"
+                        min="0.1"
+                        step="0.1"
+                      />
+                      <select class="edit-select" [(ngModel)]="produto.unidade">
+                        <option
+                          *ngFor="let unidade of unidadeMedida"
+                          [value]="unidade"
+                        >
+                          {{ unidade }}
+                        </option>
+                      </select>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngIf="produtoEmEdicao !== produto">
+                      {{ produto.codigo || "A ser gerado pelo sistema" }}
+                    </div>
+                    <div *ngIf="produtoEmEdicao === produto" class="edit-field">
+                      <input
+                        type="text"
+                        class="edit-input"
+                        [(ngModel)]="produto.codigo"
+                        (input)="validarCodigoEdicao($event, produto)"
+                        maxlength="10"
+                        placeholder="Código (opcional)"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="produtoEmEdicao !== produto"
+                      class="action-buttons-table"
+                    >
+                      <button
+                        class="btn-icon btn-edit"
+                        (click)="editarSubProduto(produto)"
+                        title="Editar"
+                      >
+                        <i class="material-icons">edit</i>
+                      </button>
+                      <button
+                        class="btn-icon btn-delete"
+                        (click)="removerSubProduto(produto)"
+                        [disabled]="!produto.permiteExcluir"
+                        title="Remover"
+                      >
+                        <i class="material-icons">delete</i>
+                      </button>
+                    </div>
+                    <div
+                      *ngIf="produtoEmEdicao === produto"
+                      class="action-buttons-table"
+                    >
+                      <button
+                        class="btn-icon btn-save"
+                        (click)="salvarEdicaoSubProduto(produto)"
+                        title="Salvar"
+                      >
+                        <i class="material-icons">save</i>
+                      </button>
+                      <button
+                        class="btn-icon btn-cancel"
+                        (click)="cancelarEdicaoSubProduto(produto)"
+                        title="Cancelar"
+                      >
+                        <i class="material-icons">cancel</i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary" (click)="confirmar()">
+            <i class="material-icons">check</i>
+            Confirmar
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirmação -->
+      <div *ngIf="currentStep === 'confirmacao'" class="step-content">
+        <div class="confirmation-section">
+          <div
+            class="confirmation-icon"
+            [class.success]="sucessoOperacao"
+            [class.error]="!sucessoOperacao"
+          >
+            <i class="material-icons">{{
+              sucessoOperacao ? "check_circle" : "error"
+            }}</i>
+          </div>
+
+          <h3 class="confirmation-title">
+            {{
+              sucessoOperacao
+                ? produtoEdicao
+                  ? "Produto Atualizado"
+                  : "Produto Cadastrado"
+                : produtoEdicao
+                ? "Erro ao Atualizar Produto"
+                : "Erro ao Cadastrar Produto"
+            }}
+          </h3>
+
+          <div *ngIf="produtosErro.length > 0" class="error-section">
+            <h4 class="error-title">
+              Produtos cadastrados com sucesso:
+              {{ produtoBase.produtos.length - produtosErro.length }} de
+              {{ produtoBase.produtos.length }}
+            </h4>
+            <h4 class="error-subtitle">Produtos com erro no cadastro:</h4>
+
+            <div class="error-table-container">
+              <table class="error-table">
+                <thead>
+                  <tr>
+                    <th>NOME</th>
+                    <th>CÓDIGO</th>
+                    <th>MOTIVO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let produto of produtosErro">
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.codigo }}</td>
+                    <td>{{ produto.motivo }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="confirmation-actions">
+            <button class="btn-primary" (click)="novoProduto()">
+              <i class="material-icons">add</i>
+              Cadastrar Novo Produto
+            </button>
+            <button class="btn-secondary" (click)="voltarParaListagem()">
+              <i class="material-icons">list</i>
+              Voltar para Listagem
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

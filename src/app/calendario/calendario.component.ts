@@ -78,7 +78,7 @@ export class CalendarioComponent implements OnInit {
         eventDisplay: 'block',
         views: {
             dayGridMonth: {
-                eventTimeFormat(arg){
+                eventTimeFormat(arg) {
                     return '';
                 },
             },
@@ -126,7 +126,10 @@ export class CalendarioComponent implements OnInit {
             params
         }).subscribe((res) => {
             if (res.success && res.data) {
-                this.events = res.data.map((item: any, index: number) => {
+
+                const atividadesValidas = res.data.filter((item: any) => !item.paused && !item.operacao.isSuspenso);
+
+                this.events = atividadesValidas.map((item: any, index: number) => {
                     const start = this.parseDate(item.dataHoraParaExecucao);
                     const end = item.operacao.qtdHoras
                         ? this.addHours(start, item.operacao.qtdHoras)
